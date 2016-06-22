@@ -31,11 +31,6 @@
  $('#chatBox').fadeOut(500);
  $('#chat').fadeIn(1000);
  }
- var inputBox = document.getElementById('chatinput');
-
-inputBox.onkeyup = function(){
-    document.getElementById('printchatbox').innerHTML = inputBox.value;
-}
  </script>
   <script   
   src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js">  
@@ -53,10 +48,6 @@ inputBox.onkeyup = function(){
  $('#chat').fadeIn(1000);
  }
  var inputBox = document.getElementById('chatinput');
-
-inputBox.onkeyup = function(){
-    document.getElementById('printchatbox').innerHTML = inputBox.value;
-}
  </script>
 <script type="text/javascript">
 	(function() {
@@ -98,7 +89,10 @@ inputBox.onkeyup = function(){
 						messages.insertBefore(message , messages.firstChild);
 					}
 
-					 localStorage.setItem('messages', JSON.stringify(data));
+					localStorage.setItem('messages', JSON.stringify(data));
+					var retrievedData = localStorage.getItem("messages");
+					var chatData = JSON.parse(retrievedData);
+					console.dir(chatData);
 
 				}
 			});
