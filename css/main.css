@@ -1,0 +1,86 @@
+body , textarea , input {
+	font:13px "Trebuchet MS", sans-serif;
+}
+.chat {
+	max-width: 300px;
+}
+.chat-messages, .chat-text-area, .chat-name {
+	border : 1px solid #bbb;
+	margin-left: -6px !important;
+}
+.chat-messages {
+	width:94%;
+	height:300px;
+	overflow-y: scroll;
+	padding: 10px
+}
+
+.chat-message {
+	margin-bottom: 10px;
+}
+
+.chat-name {
+	width:94%;
+	padding:10px; 
+	border-bottom: 0
+	margin:0;
+}
+.chat-text-area {
+	width:94%;
+	padding:10px;
+	border-top:0;
+	margin:0; 
+	max-width: 100%;
+}
+.chat-status {
+	color:#bbb;
+	padding: 5px;
+}
+#chat
+ {
+ position:absolute;
+ width:200px;
+ height:auto;
+ padding:10px;
+ background:#088A68;
+ color:#EDEDED;
+ text-align:center;
+ font-family:Cambria;
+ font-size:20px;
+ bottom:0px;
+ right:15px;
+ cursor:pointer;
+ }
+ #chatBox
+ {
+ display:none;
+ position:absolute;
+ width:200px;
+ padding:10px;
+ background:#EDEDED;
+ /*color:#FF7700;*/
+ /*text-align:center;*/
+ /*font-family:Cambria;*/
+ /*font-size:20px;*/
+ bottom:0px;
+ right:15px;
+ cursor:pointer;
+ }
+ #close
+ {
+ position:absolute;
+ width:15px;
+ height:15px;
+ padding:6px 5px 10px 5px;
+ text-align:center;
+ background:rgba(0,0,0,0.8);
+ color:#FF7700;
+ font-family:Cambria;
+ right:0px;top:0px;
+ }
+ #chatinput { 
+position: absolute;
+right:0;
+bottom:0;
+width:inherit;
+ }
