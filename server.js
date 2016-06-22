@@ -1,22 +1,50 @@
 var mongo = require('mongodb').MongoClient;
 var client = require('socket.io').listen(8080).sockets;
 console.log("working");
+
 mongo.connect('mongodb://127.0.0.1/chat', function(err, db){
 	if(err) {
 		throw err;
 	}
 	client.on('connection', function(socket) {
 		var col = db.collection('messages');
+		var usr = db.collection('users');
 		var sendStatus = function(s) {
 			socket.emit('status', s);
 		};
+		
+		socket.on("greeting", function(data) {
+			if (data == "") {
+				// new user
+				console.log("new user");
+				socket.emit("newUserIntro", "Hello! What is your name, email?");
+			} else {
+				console.log("erturn user");
+				socket.emit("ReturningUser", "Welcome back user__name");
+			}
+		});
 		col.find().limit(100).sort({_id : 1}).toArray(function(err, res) {
 			if(err) throw err;
 			socket.emit('output', res);
-
 		});
 		//wait for input
+
+		socket.on('introMessage', function(data) {
+			var name = data.message;
+			usr.insert({name : name}, function(err, res) {
+				// res = array of inserted items
+				console.log(res.insertedIds[0]);
+				console.log("inserted");
+				socket.emit('output',[data]);
+				sendStatus({
+					message : "Message sent",
+					clear : true
+				});
+			});
+		});
+
 		socket.on('input', function(data) {
+			var id;
 			var name = data.name;
 			var message = data.message;
 			var time = new Date();
@@ -28,6 +56,7 @@ mongo.connect('mongodb://127.0.0.1/chat', function(err, db){
 			}
 			else {
 			col.insert({name : name, message : message, created : time} , function() {
+
 				console.log("inserted");
 				socket.emit('output',[data]);
 				sendStatus({

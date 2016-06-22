@@ -51,6 +51,7 @@
  </script>
 <script type="text/javascript">
 	(function() {
+		var givingIntro = false;
 		var getNode = function(s) {
 			return document.querySelector(s);
 		},
@@ -77,9 +78,33 @@
 
 		}
 		if(socket!==undefined) {
+			var userinfo = localStorage.getItem("userinfo");; // fetched from local storage
+			if (userinfo == null){
+				console.log("undefined string");
+				socket.emit('greeting', "");	
+				socket.on('newUserIntro', function(data) { 
+					console.log(data); 
+					var message = document.createElement('div');
+					message.setAttribute('class', 'chat-message');
+					message.textContent = data;
+					messages.appendChild(message);
+					messages.insertBefore(message , messages.firstChild);
+					givingIntro = true;
+				});
+
+			}
+			else {
+
+				socket.emit('greeting', userinfo);
+			}
+
+			socket.on('newUserIntro', function(data) { console.log(data); });
+			socket.on('ReturningUser', function(data) { console.log(data); });
 			socket.on('output', function (data) {
-				var obj={};
-				localStorage.setItem('messages', JSON.stringify(obj));
+			var obj={};
+			var user= {};
+			localStorage.setItem('messages', JSON.stringify(obj));
+			localStorage.setItem('userInfo', JSON.stringify(user));
 				if(data.length) {
 					for(var x =0; x<data.length; x=x+1) {
 						var message = document.createElement('div');
@@ -92,11 +117,14 @@
 					localStorage.setItem('messages', JSON.stringify(data));
 					var retrievedData = localStorage.getItem("messages");
 					var chatData = JSON.parse(retrievedData);
-					console.dir(chatData);
 
 				}
 			});
+			// socket.on('greeting', function(greet) {
+			// 	console.log(greet);
+			// });
 			socket.on('status', function(data) {
+				console.log("Status ", data);
 				setStatus((typeof data === 'object')? data.message : data );
 				if(data.clear === true) {
 					textarea.value='';
@@ -107,10 +135,19 @@
 				name = chatname.value;
 				console.log(event);
 				if(event.which===13 && event.shiftKey === false) {
-					socket.emit('input', {
-						name : name,
-						message : self.value
-					});
+					if (givingIntro) {
+						socket.emit('introMessage', {
+							name : name,
+							message : self.value
+						});
+
+					} else {
+						socket.emit('input', {
+							name : name,
+							message : self.value
+						});	
+					}
+					
 					console.log("Send");
 				}
 			})
