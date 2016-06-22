@@ -1,7 +1,6 @@
 var mongo = require('mongodb').MongoClient;
 var client = require('socket.io').listen(8080).sockets;
 console.log("working");
-
 mongo.connect('mongodb://127.0.0.1/chat', function(err, db){
 	if(err) {
 		throw err;
@@ -30,7 +29,7 @@ mongo.connect('mongodb://127.0.0.1/chat', function(err, db){
 			else {
 			col.insert({name : name, message : message, created : time} , function() {
 				console.log("inserted");
-				client.emit('output',[data]);
+				socket.emit('output',[data]);
 				sendStatus({
 					message : "Message sent",
 					clear : true
