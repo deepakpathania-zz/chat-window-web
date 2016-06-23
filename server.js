@@ -79,8 +79,7 @@ mongo.connect('mongodb://127.0.0.1/chat', function(err, db){
 				sendStatus("Name and message required");
 			}
 			else {
-			col.insert({name : name, message : message, created : time} , function() {
-
+				col.insert({name : name, message : message, created : time} , function() {
 				console.log("inserted");
 				socket.emit('output',[data]);
 				sendStatus({

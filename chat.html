@@ -6,58 +6,56 @@
 	<link rel="stylesheet" type="text/css" href="css/main.css">
 </head>
 <body>
- <div id="chat" onClick="open_chatbox();"> Chat Now </div>
- <div id="chatBox"><div onclick="closeChat()" id="close">X</div> <br><br>
- <div class='printchatbox' id='printchatbox'>
-	<div class="chat">
-		<input type="text" name="msg" class="chat-name" placeholder="Enter you name here.">
+ 	<div id="chat" onClick="open_chatbox();"> Chat Now </div>
+ 	<div id="chatBox"><div onclick="closeChat()" id="close">X</div> <br><br>
+ 	<div class='printchatbox' id='printchatbox'>
+		<div class="chat">
+		<!-- <input type="text" name="msg" class="chat-name" placeholder="Enter you name here."> -->
 			<div class="chat-messages"></div>
 		<textarea class="chat-text-area" placeholder="Type message"></textarea>
-	<div class="chat-status">Status : <span>Idle</span></div>
-</div>
-</div>
+		<div class="chat-status">Status : <span>Idle</span></div>
+		</div>
+	</div>
 
-<script type="text/javascript" src="http://127.0.0.1:8080/socket.io/socket.io.js"></script>  
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"> </script>
+	<script type="text/javascript" src="http://127.0.0.1:8080/socket.io/socket.io.js"></script>  
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"> </script>
 
- <script type="text/javascript">
- function open_chatbox()
- {
- $('#chat').fadeOut(500);
- $('#chatBox').fadeIn(1000);
- }
- function closeChat()
- {
- $('#chatBox').fadeOut(500);
- $('#chat').fadeIn(1000);
- }
- </script>
-  <script   
-  src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js">  
-  </script>
+ 	<script type="text/javascript">
+ 		function open_chatbox()
+ 			{
+ 			$('#chat').fadeOut(500);
+ 			$('#chatBox').fadeIn(1000);
+		 }
+ 		function closeChat()
+ 			{
+ 			$('#chatBox').fadeOut(500);
+ 			$('#chat').fadeIn(1000);
+ 		}
+ 		</script>
+  	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
 
- <script type="text/javascript">
- function open_chatbox()
- {
- $('#chat').fadeOut(500);
- $('#chatBox').fadeIn(1000);
- }
- function closeChat()
- {
- $('#chatBox').fadeOut(500);
- $('#chat').fadeIn(1000);
- }
- var inputBox = document.getElementById('chatinput');
- </script>
-<script type="text/javascript">
-	(function() {
-		var givingIntro = 0;
-		var getNode = function(s) {
-			return document.querySelector(s);
-		},
+ 	<script type="text/javascript">
+ 		function open_chatbox()
+ 			{
+ 			$('#chat').fadeOut(500);
+ 			$('#chatBox').fadeIn(1000);
+ 		}
+ 		function closeChat()
+ 			{
+ 			$('#chatBox').fadeOut(500);
+ 			$('#chat').fadeIn(1000);
+ 		}
+ //var inputBox = document.getElementById('chatinput');
+ 	</script>
+	<script type="text/javascript">
+		(function() {
+			var givingIntro = 0;
+			var getNode = function(s) {
+				return document.querySelector(s);
+			};
 		status = getNode('.chat-status span');
 		textarea = getNode('.chat-text-area');
-		chatname = getNode('.chat-name');
+		// chatname = getNode('.chat-name');
 		messages = getNode('.chat-messages');
 		statusDefault = status.textContent;
 		setStatus = function(s) {
@@ -75,7 +73,7 @@
 			var socket = io.connect('http://127.0.0.1:8080');
 		}
 		catch(e) {
-
+			//do something if connection fails or maybe not.
 		}
 		if(socket!==undefined) {
 			var userinfo = JSON.parse(localStorage.getItem("userInfo")); // fetched from local storage
@@ -90,9 +88,7 @@
 					messages.appendChild(message);
 					messages.insertBefore(message , messages.lastChild);
 					givingIntro = 1;
-
 				});
-
 			}
 			else {
 				socket.emit('greeting', userinfo);
@@ -111,6 +107,7 @@
 			// socket.on('newUserIntro', function(data) { console.log(data); });
 			// socket.on('ReturningUser', function(data) { console.log(data); });
 			socket.on('output', function (data) {
+			console.log("chat starts");
 			var obj={};
 			var user= {};
 			localStorage.setItem('messages', JSON.stringify(obj));
@@ -164,11 +161,11 @@
 				}
 			});
 			textarea.addEventListener('keydown', function(event) {
-				var self = this, 
-				name = chatname.value;
+				var self = this; 
 				// console.log(event);
 				if(event.which===13 && event.shiftKey === false) {
 					if (givingIntro==1) {
+						var user = JSON.parse(window.localStorage.getItem("userInfo"));
 						console.log("User should enter name");
 						socket.emit('introMessage', {
 							name : name,
@@ -176,9 +173,10 @@
 						});
 
 					} else if(givingIntro==0){
+						var user = JSON.parse(window.localStorage.getItem("userInfo"));
 						console.log("User should enter chat");
 						socket.emit('input', {
-							name : name,
+							name : user.name,
 							message : self.value
 						});	
 					}
