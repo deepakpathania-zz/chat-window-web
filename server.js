@@ -1,5 +1,6 @@
 var mongo = require('mongodb').MongoClient;
 var client = require('socket.io').listen(8080).sockets;
+var ObjectId = require('mongodb').ObjectID;
 console.log("working");
 
 mongo.connect('mongodb://127.0.0.1/chat', function(err, db){
@@ -23,7 +24,6 @@ mongo.connect('mongodb://127.0.0.1/chat', function(err, db){
 
 			} else {
 				console.log("return user");
-				console.log(typeof data);
 				socket.emit("ReturningUser", "Welcome back " + data.name);
 				// socket.emit("newEmail" , "Hey " +data.name+ "! What is your mail id ?");		
 			}
@@ -36,17 +36,16 @@ mongo.connect('mongodb://127.0.0.1/chat', function(err, db){
 
 			console.log(data);
 			var email = data.email;
-			usr.update({_id: data.id}, {$set: {email : email}}, function(err, res) {
-				var userInfo={name : data.name, id: data.id, email :email};
-				socket.emit('newEmailResponse', userInfo);
-				console.log("inserted");
-			
-				// socket.emit('output',email);
-				// sendStatus({
-				// 	message : "Message sent",
-				// 	clear : true
-				// });
-			});
+			console.log("updating email in db");
+			usr.update({_id: ObjectId(data.id)}, {$set: {email : email}}, function(err, res) {
+			var userInfo={name : data.name, id: data.id, email :email};
+			socket.emit('newEmailResponse', userInfo);
+			console.log("inserted");
+			sendStatus({
+				message : "Message sent",
+				clear : true
+					});
+				});
 			});
 
 		//wait for input
@@ -60,7 +59,6 @@ mongo.connect('mongodb://127.0.0.1/chat', function(err, db){
 				socket.emit('introMessageResponse', userInfo);
 				console.log(id);
 				console.log("inserted");
-				socket.emit('output',[data]);
 				sendStatus({
 					message : "Message sent",
 					clear : true

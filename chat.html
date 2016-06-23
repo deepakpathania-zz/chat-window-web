@@ -148,10 +148,10 @@
 				localStorage.setItem('userInfo', JSON.stringify(userInfo));
 				var message = document.createElement('div');
 				message.setAttribute('class', 'chat-message');
-				message.textContent = userInfo.name +":"+ userInfo.email;
+				message.textContent = "Thanks " +userInfo.name+ "!. We'll get back to you shortly.";
 				messages.appendChild(message);
 				messages.insertBefore(message , messages.lastChild);
-				
+				givingIntro = 0;
 				});
 			// socket.on('greeting', function(greet) {
 			// 	console.log(greet);
