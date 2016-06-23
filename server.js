@@ -18,17 +18,37 @@ mongo.connect('mongodb://127.0.0.1/chat', function(err, db){
 			if (data == "") {
 				// new user
 				console.log("new user");
-				socket.emit("newUserIntro", "Hello! What is your name, email?");
+				socket.emit("newUserIntro", "Hello! What is your name?");
+
+
 			} else {
 				console.log("return user");
 				console.log(typeof data);
-				socket.emit("ReturningUser", "Welcome back " + data.name);			
+				socket.emit("ReturningUser", "Welcome back " + data.name);
+				// socket.emit("newEmail" , "Hey " +data.name+ "! What is your mail id ?");		
 			}
 		});
 		col.find().limit(100).sort({_id : 1}).toArray(function(err, res) {
 			if(err) throw err;
 			// socket.emit('output', res);
 		});
+		socket.on('newEmail', function(data) {
+
+			console.log(data);
+			var email = data.email;
+			usr.update({_id: data.id}, {$set: {email : email}}, function(err, res) {
+				var userInfo={name : data.name, id: data.id, email :email};
+				socket.emit('newEmailResponse', userInfo);
+				console.log("inserted");
+			
+				// socket.emit('output',email);
+				// sendStatus({
+				// 	message : "Message sent",
+				// 	clear : true
+				// });
+			});
+			});
+
 		//wait for input
 
 		socket.on('introMessage', function(data) {
@@ -46,6 +66,7 @@ mongo.connect('mongodb://127.0.0.1/chat', function(err, db){
 					clear : true
 				});
 			});
+
 		});
 
 		socket.on('input', function(data) {

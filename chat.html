@@ -51,7 +51,7 @@
  </script>
 <script type="text/javascript">
 	(function() {
-		var givingIntro = false;
+		var givingIntro = 0;
 		var getNode = function(s) {
 			return document.querySelector(s);
 		},
@@ -88,8 +88,9 @@
 					message.setAttribute('class', 'chat-message');
 					message.textContent = data;
 					messages.appendChild(message);
-					messages.insertBefore(message , messages.firstChild);
-					givingIntro = true;
+					messages.insertBefore(message , messages.lastChild);
+					givingIntro = 1;
+
 				});
 
 			}
@@ -103,8 +104,8 @@
 				message.setAttribute('class', 'chat-message');
 				message.textContent = data;
 				messages.appendChild(message);
-				messages.insertBefore(message , messages.firstChild);
-				givingIntro = true;
+				messages.insertBefore(message , messages.lastChild);
+				givingIntro = 0;
 			});
 
 			// socket.on('newUserIntro', function(data) { console.log(data); });
@@ -120,7 +121,7 @@
 						message.setAttribute('class', 'chat-message');
 						message.textContent = data[x].name + ' : ' + data[x].message;	
 						messages.appendChild(message);
-						messages.insertBefore(message , messages.firstChild);
+						messages.insertBefore(message , messages.lastChild);
 					}
 
 					localStorage.setItem('messages', JSON.stringify(data));
@@ -132,9 +133,26 @@
 
 			socket.on('introMessageResponse', function(userInfo) {
 				localStorage.setItem('userInfo', JSON.stringify(userInfo));
+				userinfo = userInfo;
+				givingIntro = 2;
+				var message = document.createElement('div');
+				message.setAttribute('class', 'chat-message');
+				message.textContent = "Hello " + userInfo.name+ " ! What is your email ?";
+				messages.appendChild(message);
+				messages.insertBefore(message , messages.lastChild);
 
+				});
 
-			});
+			socket.on('newEmailResponse', function(userInfo) {
+				console.log(userInfo);
+				localStorage.setItem('userInfo', JSON.stringify(userInfo));
+				var message = document.createElement('div');
+				message.setAttribute('class', 'chat-message');
+				message.textContent = userInfo.name +":"+ userInfo.email;
+				messages.appendChild(message);
+				messages.insertBefore(message , messages.lastChild);
+				
+				});
 			// socket.on('greeting', function(greet) {
 			// 	console.log(greet);
 			// });
@@ -148,19 +166,30 @@
 			textarea.addEventListener('keydown', function(event) {
 				var self = this, 
 				name = chatname.value;
-				console.log(event);
+				// console.log(event);
 				if(event.which===13 && event.shiftKey === false) {
-					if (givingIntro) {
+					if (givingIntro==1) {
+						console.log("User should enter name");
 						socket.emit('introMessage', {
 							name : name,
 							message : self.value
 						});
 
-					} else {
+					} else if(givingIntro==0){
+						console.log("User should enter chat");
 						socket.emit('input', {
 							name : name,
 							message : self.value
 						});	
+					}
+					else {
+						console.log("User should enter email");
+						var user = JSON.parse(window.localStorage.getItem("userInfo"));
+						socket.emit('newEmail', {
+							name : user.name,
+							id: user.id,
+							email : self.value
+						});
 					}
 					
 					console.log("Send");
