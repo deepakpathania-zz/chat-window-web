@@ -78,7 +78,7 @@
 
 		}
 		if(socket!==undefined) {
-			var userinfo = localStorage.getItem("userinfo");; // fetched from local storage
+			var userinfo = JSON.parse(localStorage.getItem("userInfo")); // fetched from local storage
 			if (userinfo == null){
 				console.log("undefined string");
 				socket.emit('greeting', "");	
@@ -94,17 +94,26 @@
 
 			}
 			else {
-
 				socket.emit('greeting', userinfo);
 			}
 
-			socket.on('newUserIntro', function(data) { console.log(data); });
-			socket.on('ReturningUser', function(data) { console.log(data); });
+			socket.on('ReturningUser', function(data) {
+				console.log(data);
+				var message = document.createElement('div');
+				message.setAttribute('class', 'chat-message');
+				message.textContent = data;
+				messages.appendChild(message);
+				messages.insertBefore(message , messages.firstChild);
+				givingIntro = true;
+			});
+
+			// socket.on('newUserIntro', function(data) { console.log(data); });
+			// socket.on('ReturningUser', function(data) { console.log(data); });
 			socket.on('output', function (data) {
 			var obj={};
 			var user= {};
 			localStorage.setItem('messages', JSON.stringify(obj));
-			localStorage.setItem('userInfo', JSON.stringify(user));
+			// localStorage.setItem('userInfo', JSON.stringify(user));
 				if(data.length) {
 					for(var x =0; x<data.length; x=x+1) {
 						var message = document.createElement('div');
@@ -119,6 +128,12 @@
 					var chatData = JSON.parse(retrievedData);
 
 				}
+			});
+
+			socket.on('introMessageResponse', function(userInfo) {
+				localStorage.setItem('userInfo', JSON.stringify(userInfo));
+
+
 			});
 			// socket.on('greeting', function(greet) {
 			// 	console.log(greet);

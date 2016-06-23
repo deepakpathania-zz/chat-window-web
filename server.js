@@ -14,26 +14,31 @@ mongo.connect('mongodb://127.0.0.1/chat', function(err, db){
 		};
 		
 		socket.on("greeting", function(data) {
+			console.log(data);
 			if (data == "") {
 				// new user
 				console.log("new user");
 				socket.emit("newUserIntro", "Hello! What is your name, email?");
 			} else {
-				console.log("erturn user");
-				socket.emit("ReturningUser", "Welcome back user__name");
+				console.log("return user");
+				console.log(typeof data);
+				socket.emit("ReturningUser", "Welcome back " + data.name);			
 			}
 		});
 		col.find().limit(100).sort({_id : 1}).toArray(function(err, res) {
 			if(err) throw err;
-			socket.emit('output', res);
+			// socket.emit('output', res);
 		});
 		//wait for input
 
 		socket.on('introMessage', function(data) {
-			var name = data.message;
-			usr.insert({name : name}, function(err, res) {
+				var name = data.message;
+				usr.insert({name : name}, function(err, res) {
 				// res = array of inserted items
-				console.log(res.insertedIds[0]);
+				var id =res.insertedIds[0];
+				var userInfo = {name : name, id : id};
+				socket.emit('introMessageResponse', userInfo);
+				console.log(id);
 				console.log("inserted");
 				socket.emit('output',[data]);
 				sendStatus({
