@@ -210,9 +210,21 @@
 				messages.insertBefore(clear, messages.lastChild);
 				givingIntro = 0;
 				});
-			// socket.on('greeting', function(greet) {
-			// 	console.log(greet);
-			// });
+
+			socket.on('wrongEmailResponse', function(userInfo) {
+				var message = document.createElement('div');
+				var clear = document.createElement('div');
+				clear.setAttribute('class', 'clear');
+				message.setAttribute('class', 'chat-message-left');
+				message.textContent = "Hey " +userInfo.name+ "!. This doesn't seem like a valid email address. Try again" ;
+				messages.appendChild(message);
+				messages.appendChild(clear);
+				messages.insertBefore(message , messages.lastChild);
+				messages.insertBefore(clear, messages.lastChild);
+				givingIntro =2;
+
+			});
+	
 			socket.on('status', function(data) {
 				console.log("Status ", data);
 				setStatus((typeof data === 'object')? data.message : data );

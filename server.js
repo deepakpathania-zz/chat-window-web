@@ -33,20 +33,39 @@ mongo.connect('mongodb://127.0.0.1/chat', function(err, db){
 			// socket.emit('output', res);
 		});
 		socket.on('newEmail', function(data) {
-
-			console.log(data);
+		console.log(data);
+		console.log("Email test");
+		function validateEmail(email) {
+    		if (email.length == 0) return false;
+    		var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/i;
+    		return re.test(email);
+			}
 			var email = data.email;
-			console.log("updating email in db");
-			usr.update({_id: ObjectId(data.id)}, {$set: {email : email}}, function(err, res) {
-			var userInfo={name : data.name, id: data.id, email :email};
-			socket.emit('newEmailResponse', userInfo);
-			console.log("inserted");
-			sendStatus({
-				message : "Message sent",
-				clear : true
+			if (validateEmail(email)) { 
+				console.log('Valid email address'); 
+				console.log("updating email in db");
+				usr.update({_id: ObjectId(data.id)}, {$set: {email : email}}, function(err, res) {
+					var userInfo={name : data.name, id: data.id, email :email};
+					socket.emit('newEmailResponse', userInfo);
+					console.log("inserted");
+					sendStatus({
+						message : "Message sent",
+						clear : true
 					});
 				});
+			}
+			else {
+				console.log('wrong email address');
+				var userInfo={name : data.name, id: data.id, email :email};
+				socket.emit('wrongEmailResponse', userInfo);
+				sendStatus({
+						message : "Message sent",
+						clear : true
+					});
+				}
+
 			});
+
 
 		//wait for input
 
