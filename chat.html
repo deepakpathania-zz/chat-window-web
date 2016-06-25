@@ -76,14 +76,15 @@
 			//do something if connection fails or maybe not.
 		}
 		if(socket!==undefined) {
-			var userinfo = JSON.parse(localStorage.getItem("userInfo")); // fetched from local storage
+			var userinfo = JSON.parse(localStorage.getItem("userInfo")); 
+			// fetched from local storage
 			if (userinfo == null){
 				console.log("undefined string");
 				socket.emit('greeting', "");	
 				socket.on('newUserIntro', function(data) { 
 					console.log(data); 
 					var message = document.createElement('div');
-					message.setAttribute('class', 'chat-message');
+					message.setAttribute('class', 'chat-message-left');
 					message.textContent = data;
 					messages.appendChild(message);
 					messages.insertBefore(message , messages.lastChild);
@@ -94,14 +95,42 @@
 				socket.emit('greeting', userinfo);
 			}
 
+
 			socket.on('ReturningUser', function(data) {
 				console.log(data);
+				var clear = document.createElement('div');
+				clear.setAttribute('class', 'clear');
 				var message = document.createElement('div');
-				message.setAttribute('class', 'chat-message');
+				message.setAttribute('class', 'chat-message-left');
 				message.textContent = data;
 				messages.appendChild(message);
+				messages.appendChild(clear);
 				messages.insertBefore(message , messages.lastChild);
+				messages.insertBefore(clear, messages.lastChild);
 				givingIntro = 0;
+				var retrievedData = localStorage.getItem("messages");
+				var chatData = JSON.parse(retrievedData);
+				var userData = JSON.parse(localStorage.getItem("userInfo"));
+				var userName = userData.name;
+				localStorage.setItem('messages', JSON.stringify(chatData));
+					if(chatData.length) {
+						for (var x=0; x<chatData.length; x=x+1) {
+							var message = document.createElement('div');
+							var clear = document.createElement('div');
+							clear.setAttribute('class', 'clear');
+								if(chatData[x].name == userName) {
+									message.setAttribute('class', 'chat-message-right');
+								}
+								else {
+									message.setAttribute('class', 'chat-message-left');
+								}
+							message.textContent = chatData[x].message;	
+							messages.appendChild(message);
+							messages.appendChild(clear);
+							messages.insertBefore(message , messages.lastChild);
+							messages.insertBefore(clear, messages.lastChild);
+						}
+					}
 			});
 
 			// socket.on('newUserIntro', function(data) { console.log(data); });
@@ -110,22 +139,43 @@
 			console.log("chat starts");
 			var obj={};
 			var user= {};
-			localStorage.setItem('messages', JSON.stringify(obj));
+			//localStorage.setItem('messages', JSON.stringify(obj));
 			// localStorage.setItem('userInfo', JSON.stringify(user));
 				if(data.length) {
 					for(var x =0; x<data.length; x=x+1) {
 						var message = document.createElement('div');
-						message.setAttribute('class', 'chat-message');
-						message.textContent = data[x].name + ' : ' + data[x].message;	
+						var clear = document.createElement('div');
+						clear.setAttribute('class', 'clear');
+						message.setAttribute('class', 'chat-message-right');
+						var sender = document.createElement('div');
+						sender.setAttribute('class', 'sender');
+						sender.textContent = data[x].name;
+						console.log(sender.textContent);
+						var elem = sender.textContent;
+						message.textContent = data[x].message;	
 						messages.appendChild(message);
+						messages.appendChild(clear);
+						messages.insertBefore(message , messages.lastChild);
+						messages.insertBefore(clear, messages.lastChild);
+					}
+				}
+					else {
+						var message = document.createElement('div');
+						var clear = document.createElement('div');
+						clear.setAttribute('class', 'clear');
+						message.setAttribute('class', 'chat-message-right');
+						message.textContent = data.message;	
+						messages.appendChild(message);
+						messages.appendChild(clear);
 						messages.insertBefore(message , messages.lastChild);
 					}
 
-					localStorage.setItem('messages', JSON.stringify(data));
 					var retrievedData = localStorage.getItem("messages");
 					var chatData = JSON.parse(retrievedData);
-
-				}
+					var userData = JSON.parse(localStorage.getItem("userInfo"));
+					var userName = userData.name;
+					chatData.push(data);
+					localStorage.setItem('messages', JSON.stringify(chatData));
 			});
 
 			socket.on('introMessageResponse', function(userInfo) {
@@ -133,21 +183,31 @@
 				userinfo = userInfo;
 				givingIntro = 2;
 				var message = document.createElement('div');
-				message.setAttribute('class', 'chat-message');
+				var clear = document.createElement('div');
+				clear.setAttribute('class', 'clear');
+				message.setAttribute('class', 'chat-message-left');
 				message.textContent = "Hello " + userInfo.name+ " ! What is your email ?";
 				messages.appendChild(message);
+				messages.appendChild(clear);
 				messages.insertBefore(message , messages.lastChild);
+				messages.insertBefore(clear, messages.lastChild);
 
 				});
 
 			socket.on('newEmailResponse', function(userInfo) {
 				console.log(userInfo);
+				var obj=[];
+				localStorage.setItem('messages', JSON.stringify(obj));
 				localStorage.setItem('userInfo', JSON.stringify(userInfo));
 				var message = document.createElement('div');
-				message.setAttribute('class', 'chat-message');
+				var clear = document.createElement('div');
+				clear.setAttribute('class', 'clear');
+				message.setAttribute('class', 'chat-message-left');
 				message.textContent = "Thanks " +userInfo.name+ "!. We'll get back to you shortly.";
 				messages.appendChild(message);
+				messages.appendChild(clear);
 				messages.insertBefore(message , messages.lastChild);
+				messages.insertBefore(clear, messages.lastChild);
 				givingIntro = 0;
 				});
 			// socket.on('greeting', function(greet) {
