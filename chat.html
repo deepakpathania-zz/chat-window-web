@@ -6,56 +6,39 @@
 	<link rel="stylesheet" type="text/css" href="css/main.css">
 </head>
 <body>
- 	<div id="chat" onClick="open_chatbox();"> Chat Now </div>
+ 	<div id="chat" onClick="open_chatbox();"> Chat Now </div> <!--Chat window tile, expands and closes on click  -->
  	<div id="chatBox"><div onclick="closeChat()" id="close">X</div> <br><br>
  	<div class='printchatbox' id='printchatbox'>
 		<div class="chat">
-		<!-- <input type="text" name="msg" class="chat-name" placeholder="Enter you name here."> -->
-			<div class="chat-messages"></div>
-		<textarea class="chat-text-area" placeholder="Type message"></textarea>
-		<div class="chat-status">Status : <span>Idle</span></div>
+			<div class="chat-messages"></div> <!-- chat messages are populated here-->
+			<textarea class="chat-text-area" placeholder="Type message"></textarea><!-- Chat messages are entered here -->
+			<div class="chat-status">Status : <span>Idle</span></div> <!--status for testing messages -->
 		</div>
 	</div>
 
 	<script type="text/javascript" src="http://127.0.0.1:8080/socket.io/socket.io.js"></script>  
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"> </script>
-
- 	<script type="text/javascript">
+	<script type="text/javascript"> //customize opening and closing of chat box here
  		function open_chatbox()
- 			{
+ 		{
  			$('#chat').fadeOut(500);
  			$('#chatBox').fadeIn(1000);
 		 }
  		function closeChat()
- 			{
+ 		{
  			$('#chatBox').fadeOut(500);
  			$('#chat').fadeIn(1000);
  		}
- 		</script>
-  	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-
- 	<script type="text/javascript">
- 		function open_chatbox()
- 			{
- 			$('#chat').fadeOut(500);
- 			$('#chatBox').fadeIn(1000);
- 		}
- 		function closeChat()
- 			{
- 			$('#chatBox').fadeOut(500);
- 			$('#chat').fadeIn(1000);
- 		}
- //var inputBox = document.getElementById('chatinput');
  	</script>
 	<script type="text/javascript">
-		(function() {
-			var givingIntro = 0;
-			var getNode = function(s) {
-				return document.querySelector(s);
-			};
+		(function() 
+		{
+			var givingIntro = 0; //flag for testing whether usr is entering normal chat message(0) , name(1) or email id(2)
+			var getNode = function(s) { //returns reference to passed attribute 
+			return document.querySelector(s);
+		};
 		status = getNode('.chat-status span');
 		textarea = getNode('.chat-text-area');
-		// chatname = getNode('.chat-name');
 		messages = getNode('.chat-messages');
 		statusDefault = status.textContent;
 		setStatus = function(s) {
@@ -70,33 +53,31 @@
 		setStatus("Testing");
 
 		try {
-			var socket = io.connect('http://127.0.0.1:8080');
+			var socket = io.connect('http://127.0.0.1:8080'); //change this according to your server
 		}
 		catch(e) {
-			//do something if connection fails or maybe not.
+			//Manage the exception gracefully. Send a PR after doing it :v
 		}
 		if(socket!==undefined) {
 			var userinfo = JSON.parse(localStorage.getItem("userInfo")); 
 			// fetched from local storage
-			if (userinfo == null){
-				console.log("undefined string");
-				socket.emit('greeting', "");	
+			if (userinfo == null){ //new user
+				socket.emit('greeting', ""); //pass empty string to greeting
 				socket.on('newUserIntro', function(data) { 
 					console.log(data); 
-					var message = document.createElement('div');
+					var message = document.createElement('div'); //create a div for the new chat message
 					message.setAttribute('class', 'chat-message-left');
-					message.textContent = data;
+					message.textContent = data; //populate it with the message data
 					messages.appendChild(message);
 					messages.insertBefore(message , messages.lastChild);
-					givingIntro = 1;
+					givingIntro = 1; //change flag to now ask for email
 				});
 			}
 			else {
-				socket.emit('greeting', userinfo);
+				socket.emit('greeting', userinfo); //returning user
 			}
 
-
-			socket.on('ReturningUser', function(data) {
+			socket.on('ReturningUser', function(data) { //manage returning user
 				console.log(data);
 				var clear = document.createElement('div');
 				clear.setAttribute('class', 'clear');
@@ -112,7 +93,7 @@
 				var chatData = JSON.parse(retrievedData);
 				var userData = JSON.parse(localStorage.getItem("userInfo"));
 				var userName = userData.name;
-				localStorage.setItem('messages', JSON.stringify(chatData));
+				localStorage.setItem('messages', JSON.stringify(chatData)); //store messages in localstorage to fetch later
 					if(chatData.length) {
 						for (var x=0; x<chatData.length; x=x+1) {
 							var message = document.createElement('div');
@@ -124,23 +105,18 @@
 								else {
 									message.setAttribute('class', 'chat-message-left');
 								}
-							message.textContent = chatData[x].message;	
-							messages.appendChild(message);
-							messages.appendChild(clear);
-							messages.insertBefore(message , messages.lastChild);
-							messages.insertBefore(clear, messages.lastChild);
+				message.textContent = chatData[x].message;	
+				messages.appendChild(message);
+				messages.appendChild(clear);
+				messages.insertBefore(message , messages.lastChild);
+				messages.insertBefore(clear, messages.lastChild);
 						}
 					}
 			});
-
-			// socket.on('newUserIntro', function(data) { console.log(data); });
-			// socket.on('ReturningUser', function(data) { console.log(data); });
-			socket.on('output', function (data) {
+			socket.on('output', function (data) { //manage normal chat messages
 			console.log("chat starts");
 			var obj={};
 			var user= {};
-			//localStorage.setItem('messages', JSON.stringify(obj));
-			// localStorage.setItem('userInfo', JSON.stringify(user));
 				if(data.length) {
 					for(var x =0; x<data.length; x=x+1) {
 						var message = document.createElement('div');
@@ -149,7 +125,7 @@
 						message.setAttribute('class', 'chat-message-right');
 						var sender = document.createElement('div');
 						sender.setAttribute('class', 'sender');
-						sender.textContent = data[x].name;
+						sender.textContent = data[x].name; // do something with sender name if you feel like
 						console.log(sender.textContent);
 						var elem = sender.textContent;
 						message.textContent = data[x].message;	
@@ -170,15 +146,15 @@
 						messages.insertBefore(message , messages.lastChild);
 					}
 
-					var retrievedData = localStorage.getItem("messages");
-					var chatData = JSON.parse(retrievedData);
-					var userData = JSON.parse(localStorage.getItem("userInfo"));
-					var userName = userData.name;
-					chatData.push(data);
-					localStorage.setItem('messages', JSON.stringify(chatData));
+				var retrievedData = localStorage.getItem("messages");
+				var chatData = JSON.parse(retrievedData);
+				var userData = JSON.parse(localStorage.getItem("userInfo"));
+				var userName = userData.name;
+				chatData.push(data);
+				localStorage.setItem('messages', JSON.stringify(chatData));
 			});
 
-			socket.on('introMessageResponse', function(userInfo) {
+			socket.on('introMessageResponse', function(userInfo) { //manage response to entering name
 				localStorage.setItem('userInfo', JSON.stringify(userInfo));
 				userinfo = userInfo;
 				givingIntro = 2;
@@ -192,9 +168,9 @@
 				messages.insertBefore(message , messages.lastChild);
 				messages.insertBefore(clear, messages.lastChild);
 
-				});
+			});
 
-			socket.on('newEmailResponse', function(userInfo) {
+			socket.on('newEmailResponse', function(userInfo) { //manage response to entering correct email
 				console.log(userInfo);
 				var obj=[];
 				localStorage.setItem('messages', JSON.stringify(obj));
@@ -209,9 +185,10 @@
 				messages.insertBefore(message , messages.lastChild);
 				messages.insertBefore(clear, messages.lastChild);
 				givingIntro = 0;
-				});
+				
+			});
 
-			socket.on('wrongEmailResponse', function(userInfo) {
+			socket.on('wrongEmailResponse', function(userInfo) { //manage response to entering wrong email
 				var message = document.createElement('div');
 				var clear = document.createElement('div');
 				clear.setAttribute('class', 'clear');
@@ -232,11 +209,10 @@
 					textarea.value='';
 				}
 			});
-			textarea.addEventListener('keydown', function(event) {
+			textarea.addEventListener('keydown', function(event) { //sends message on enter and enters next line on shift plus enter
 				var self = this; 
-				// console.log(event);
 				if(event.which===13 && event.shiftKey === false) {
-					if (givingIntro==1) {
+					if (givingIntro==1) { //name response
 						var user = JSON.parse(window.localStorage.getItem("userInfo"));
 						console.log("User should enter name");
 						socket.emit('introMessage', {
@@ -244,7 +220,7 @@
 							message : self.value
 						});
 
-					} else if(givingIntro==0){
+					} else if(givingIntro==0){ //normal chat
 						var user = JSON.parse(window.localStorage.getItem("userInfo"));
 						console.log("User should enter chat");
 						socket.emit('input', {
@@ -252,7 +228,7 @@
 							message : self.value
 						});	
 					}
-					else {
+					else { //email response
 						console.log("User should enter email");
 						var user = JSON.parse(window.localStorage.getItem("userInfo"));
 						socket.emit('newEmail', {

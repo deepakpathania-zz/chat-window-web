@@ -3,11 +3,11 @@ var client = require('socket.io').listen(8080).sockets;
 var ObjectId = require('mongodb').ObjectID;
 console.log("working");
 
-mongo.connect('mongodb://127.0.0.1/chat', function(err, db){
+mongo.connect('mongodb://127.0.0.1/chat', function(err, db){ //change collection name from chat to your collection name
 	if(err) {
 		throw err;
 	}
-	client.on('connection', function(socket) {
+	client.on('connection', function(socket) { //connect to collections on connection
 		var col = db.collection('messages');
 		var usr = db.collection('users');
 		var sendStatus = function(s) {
@@ -16,21 +16,21 @@ mongo.connect('mongodb://127.0.0.1/chat', function(err, db){
 		
 		socket.on("greeting", function(data) {
 			console.log(data);
-			if (data == "") {
+			if (data == "") 
+			{
 				// new user
 				console.log("new user");
 				socket.emit("newUserIntro", "Hello! What is your name?");
-
-
-			} else {
+			} 
+			else 
+			{
+				//returning user
 				console.log("return user");
-				socket.emit("ReturningUser", "Welcome back " + data.name);
-				// socket.emit("newEmail" , "Hey " +data.name+ "! What is your mail id ?");		
+				socket.emit("ReturningUser", "Welcome back " + data.name);	
 			}
 		});
-		col.find().limit(100).sort({_id : 1}).toArray(function(err, res) {
+		col.find().limit(100).sort({_id : 1}).toArray(function(err, res) {  //get previous 100 chat messages from collection
 			if(err) throw err;
-			// socket.emit('output', res);
 		});
 		socket.on('newEmail', function(data) {
 		console.log(data);
@@ -57,7 +57,7 @@ mongo.connect('mongodb://127.0.0.1/chat', function(err, db){
 			else {
 				console.log('wrong email address');
 				var userInfo={name : data.name, id: data.id, email :email};
-				socket.emit('wrongEmailResponse', userInfo);
+				socket.emit('wrongEmailResponse', userInvfo);
 				sendStatus({
 						message : "Message sent",
 						clear : true
@@ -66,10 +66,7 @@ mongo.connect('mongodb://127.0.0.1/chat', function(err, db){
 
 			});
 
-
-		//wait for input
-
-		socket.on('introMessage', function(data) {
+		socket.on('introMessage', function(data) { //user entered his name
 				var name = data.message;
 				usr.insert({name : name}, function(err, res) {
 				// res = array of inserted items
@@ -86,7 +83,7 @@ mongo.connect('mongodb://127.0.0.1/chat', function(err, db){
 
 		});
 
-		socket.on('input', function(data) {
+		socket.on('input', function(data) { //user entered normal chat message
 			var id;
 			var name = data.name;
 			var message = data.message;
@@ -98,7 +95,7 @@ mongo.connect('mongodb://127.0.0.1/chat', function(err, db){
 				sendStatus("Name and message required");
 			}
 			else {
-				col.insert({name : name, message : message, created : time} , function() {
+				col.insert({name : name, message : message, created : time} , function() { //insert chat messaged in db
 				console.log("inserted");
 				socket.emit('output',data);
 				sendStatus({
