@@ -113,6 +113,22 @@
 						}
 					}
 			});
+			socket.on('newAdminMessageResponse', function(data) {
+				var obj=[];
+				console.log("admin response");
+				localStorage.setItem('messages', JSON.stringify(obj));
+				localStorage.setItem('userInfo', JSON.stringify(data));
+				var message = document.createElement('div');
+				var clear = document.createElement('div');
+				clear.setAttribute('class', 'clear');
+				message.setAttribute('class', 'chat-message-left');
+				message.textContent = "Thanks " +data.name+ "!. You are now connected to our admin.";
+				messages.appendChild(message);
+				messages.appendChild(clear);
+				messages.insertBefore(message , messages.lastChild);
+				messages.insertBefore(clear, messages.lastChild);
+				givingIntro = 0;
+			});
 			socket.on('output', function (data) { //manage normal chat messages
 			console.log("chat starts");
 			var obj={};

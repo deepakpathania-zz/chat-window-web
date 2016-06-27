@@ -1,8 +1,11 @@
 var mongo = require('mongodb').MongoClient;
 var client = require('socket.io').listen(8080).sockets;
 var ObjectId = require('mongodb').ObjectID;
-console.log("working");
+console.log("working");	
+var admin;
+var clients = {};
 
+var hashed_string = "1c4a81692da3391b57ba6c5afdf11f46";
 mongo.connect('mongodb://127.0.0.1/chat', function(err, db){ //change collection name from chat to your collection name
 	if(err) {
 		throw err;
@@ -13,7 +16,6 @@ mongo.connect('mongodb://127.0.0.1/chat', function(err, db){ //change collection
 		var sendStatus = function(s) {
 			socket.emit('status', s);
 		};
-		
 		socket.on("greeting", function(data) {
 			console.log(data);
 			if (data == "") 
@@ -29,6 +31,16 @@ mongo.connect('mongodb://127.0.0.1/chat', function(err, db){ //change collection
 				socket.emit("ReturningUser", "Welcome back " + data.name);	
 			}
 		});
+		socket.on(hashed_string, function(data) {
+			admin = socket;
+			admin.on('newAdminMessage', function(data) {
+				console.log("admin response");
+				var clientid = data.id;
+				console.log(clients);
+				clients[clientid].emit('newAdminMessageResponse', data);
+			});
+		});
+		
 		col.find().limit(100).sort({_id : 1}).toArray(function(err, res) {  //get previous 100 chat messages from collection
 			if(err) throw err;
 		});
@@ -41,29 +53,39 @@ mongo.connect('mongodb://127.0.0.1/chat', function(err, db){ //change collection
     		return re.test(email);
 			}
 			var email = data.email;
+			
 			if (validateEmail(email)) { 
 				console.log('Valid email address'); 
 				console.log("updating email in db");
 				usr.update({_id: ObjectId(data.id)}, {$set: {email : email}}, function(err, res) {
 					var userInfo={name : data.name, id: data.id, email :email};
+					if(admin==undefined) {
+					console.log("admin connect not working")
 					socket.emit('newEmailResponse', userInfo);
+					}
+					else {
+						clients[data.id] = socket;
+						console.log("adminConnect Working");
+						admin.emit("adminConnect", userInfo);
+					}
 					console.log("inserted");
 					sendStatus({
 						message : "Message sent",
 						clear : true
 					});
+
 				});
+
 			}
 			else {
 				console.log('wrong email address');
 				var userInfo={name : data.name, id: data.id, email :email};
-				socket.emit('wrongEmailResponse', userInvfo);
+				socket.emit('wrongEmailResponse', userInfo);
 				sendStatus({
 						message : "Message sent",
 						clear : true
 					});
 				}
-
 			});
 
 		socket.on('introMessage', function(data) { //user entered his name
