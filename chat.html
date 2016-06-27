@@ -225,6 +225,18 @@
 					textarea.value='';
 				}
 			});
+		socket.on('outputAdmin', function(data) {
+			var message = document.createElement('div');
+			var clear = document.createElement('div');
+			clear.setAttribute('class', 'clear');
+			message.setAttribute('class', 'chat-message-left');
+			message.textContent = data.message;	
+			messages.appendChild(message);
+			messages.appendChild(clear);
+			messages.insertBefore(message , messages.lastChild);
+			
+		});
+
 			textarea.addEventListener('keydown', function(event) { //sends message on enter and enters next line on shift plus enter
 				var self = this; 
 				if(event.which===13 && event.shiftKey === false) {
@@ -241,6 +253,8 @@
 						console.log("User should enter chat");
 						socket.emit('input', {
 							name : user.name,
+							id : user.id,
+							email : user.email,
 							message : self.value
 						});	
 					}
@@ -256,7 +270,7 @@
 					
 					console.log("Send");
 				}
-			})
+			});
 		}
 		
 	})();

@@ -119,6 +119,9 @@ mongo.connect('mongodb://127.0.0.1/chat', function(err, db){ //change collection
 			else {
 				col.insert({name : name, message : message, created : time} , function() { //insert chat messaged in db
 				console.log("inserted");
+				if(admin!=undefined) {
+					admin.emit('newMessage',data);
+				}
 				socket.emit('output',data);
 				sendStatus({
 					message : "Message sent",
@@ -128,5 +131,16 @@ mongo.connect('mongodb://127.0.0.1/chat', function(err, db){ //change collection
 		}
 
 		})
+
+		 socket.on('inputAdmin', function(data) {
+		 	if(clients[data.id] != undefined){
+		 		var client = clients[data.id];
+		 		client.emit('outputAdmin', data);
+		 		sendStatus({
+		 			message : "Message sent",
+		 			clear: true
+		 		});
+		 	}
+		 });
 	});
 });

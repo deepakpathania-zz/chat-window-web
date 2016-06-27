@@ -3,24 +3,109 @@
 <head>
 	<meta charset="utf-8">
 	<title>Admin dashboard</title>
+	<link rel="stylesheet" type="text/css" href="css/main.css">
 </head>
 <body>
 <h1>Admin Dashboard</h1>
+<div id="chat" onClick="open_chatbox();"> Chat Now </div> <!--Chat window tile, expands and closes on click  -->
+ 	<div id="chatBox"><div onclick="closeChat()" id="close">X</div> <br><br>
+ 	<div class='printchatbox' id='printchatbox'>
+		<div class="chat">
+			<div class="chat-messages"></div> <!-- chat messages are populated here-->
+			<textarea class="chat-text-area" placeholder="Type message"></textarea><!-- Chat messages are entered here -->
+			<div class="chat-status">Status : <span>Idle</span></div> <!--status for testing messages -->
+		</div>
+	</div>
 </body>
+
 <script type="text/javascript" src="http://127.0.0.1:8080/socket.io/socket.io.js"></script>  
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"> </script>
+
+<script type="text/javascript"> //customize opening and closing of chat box here
+ 	function open_chatbox()
+ 	{
+ 		$('#chat').fadeOut(500);
+ 		$('#chatBox').fadeIn(1000);
+	}
+ 	function closeChat()
+ 	{
+ 		$('#chatBox').fadeOut(500);
+ 		$('#chat').fadeIn(1000);
+ 	}
+ 	</script>
 <script type="text/javascript">
+	var clientId;
 	try {
 			var socket = io.connect('http://127.0.0.1:8080'); //change this according to your server
 		}
 	catch(e) {
 			//Manage the exception gracefully. Send a PR after doing it :v
 		}
+	var getNode = function(s) { //returns reference to passed attribute 
+		return document.querySelector(s);
+	};
+	status = getNode('.chat-status span');
+	textarea = getNode('.chat-text-area');
+	messages = getNode('.chat-messages');
+	var sendStatus = function(s) {
+		socket.emit('status', s);
+	};
+	statusDefault = status.textContent;
+	setStatus = function(s) {
+		status.textContent = s;
+		if(s != statusDefault) {
+		var delay = setTimeout(function() {
+			setStatus(statusDefault);
+			clearInterval(delay);
+			},3000);
+		}
+	};
+	setStatus("Testing");
+
 	var hashed_string = "1c4a81692da3391b57ba6c5afdf11f46";
 	socket.emit(hashed_string);
 	socket.on('adminConnect', function(userInfo) {
 		console.log("Now connected to admin");
 		socket.emit('newAdminMessage', userInfo);
+	});
+	socket.on('newMessage', function(data) {
+		var message = document.createElement('div');
+		var clear = document.createElement('div');
+		clear.setAttribute('class', 'clear');
+		message.setAttribute('class', 'chat-message-right');
+		message.textContent = data.message;	
+		console.log(data);
+		clientId = data.id;
+		messages.appendChild(message);
+		messages.appendChild(clear);
+		messages.insertBefore(message , messages.lastChild);
+	});
+	socket.on('status', function(data) {
+		console.log("Status ", data);
+		setStatus((typeof data === 'object')? data.message : data );
+		if(data.clear === true) {
+			textarea.value='';
+			}
+		});
+			
+	textarea.addEventListener('keydown', function(event) { //sends message on enter and enters next line on shift plus enter
+		var self = this; 
+		if(event.which===13 && event.shiftKey === false) {
+			console.log("Admin should enter chat");
+			socket.emit('inputAdmin', {
+				id : clientId,
+				message : self.value
+			});
+			var message = document.createElement('div');
+			var clear = document.createElement('div');
+			clear.setAttribute('class', 'clear');
+			message.setAttribute('class', 'chat-message-left');
+			message.textContent = self.value;	
+			messages.appendChild(message);
+			messages.appendChild(clear);
+			messages.insertBefore(message , messages.lastChild);
+		}
+
 	});
 
 </script>
