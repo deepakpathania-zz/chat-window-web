@@ -36,6 +36,7 @@ mongo.connect('mongodb://127.0.0.1/chat', function(err, db){ //change collection
 					clients[data.id] = socket;
 					console.log("added client");
 					admin.emit('newMessage',data);
+					socket.emit('newMessage', "Welcome back " +data.name);
 					sendStatus({
 						message : "Message sent",
 						clear : true
@@ -71,8 +72,6 @@ mongo.connect('mongodb://127.0.0.1/chat', function(err, db){ //change collection
 				console.log("updating email in db");
 				usr.update({_id: ObjectId(data.id)}, {$set: {email : email}}, function(err, res) {
 					var userInfo={name : data.name, id: data.id, email :email};
-					// var data = {name : data.name , id : data.id, message : data.message};
-					// console.log("Data :" ,data);
 					if(admin==undefined) {
 					console.log("admin connect not working")
 					socket.emit('newEmailResponse', userInfo);
@@ -147,6 +146,12 @@ mongo.connect('mongodb://127.0.0.1/chat', function(err, db){ //change collection
 		})
 
 		 socket.on('inputAdmin', function(data) {
+		 	var id;
+			var name = data.name;
+			var message = data.message;
+			var time = new Date();
+			data.created = time;
+		 	col.insert({name : name, message : message, created : time} , function() {
 		 	console.log("input admin : ", data);
 		 	if(clients[data.id] != undefined){
 		 		console.log("if condition");
@@ -158,5 +163,6 @@ mongo.connect('mongodb://127.0.0.1/chat', function(err, db){ //change collection
 		 		});
 		 	}
 		 });
+		});
 	});
 });

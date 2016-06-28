@@ -16,7 +16,7 @@
 		</div>
 	</div>
 
-	<script type="text/javascript" src="http://127.0.0.1:8080/socket.io/socket.io.js"></script>  
+	<script type="text/javascript" src="https://cdn.socket.io/socket.io-1.4.5.js"></script>  
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"> </script>
 	<script type="text/javascript"> //customize opening and closing of chat box here
  		function open_chatbox()
@@ -53,7 +53,7 @@
 		setStatus("Testing");
 
 		try {
-			var socket = io.connect('http://127.0.0.1:8080'); //change this according to your server
+			var socket = io.connect('http://192.168.182.86:8080'); //change this according to your server
 		}
 		catch(e) {
 			//Manage the exception gracefully. Send a PR after doing it :v
@@ -112,6 +112,43 @@
 				messages.insertBefore(clear, messages.lastChild);
 						}
 					}
+			});
+			socket.on('newMessage', function(data) {
+				console.log("return user new message");
+				var message = document.createElement('div');
+				var clear = document.createElement('div');
+				clear.setAttribute('class', 'clear');
+				message.setAttribute('class', 'chat-message-left');
+				message.textContent = data;	
+				console.log(data);
+				clientId = data.id;
+				messages.appendChild(message);
+				messages.appendChild(clear);
+				messages.insertBefore(message , messages.lastChild);
+				var retrievedData = localStorage.getItem("messages");
+				var chatData = JSON.parse(retrievedData);
+				var userData = JSON.parse(localStorage.getItem("userInfo"));
+				var userName = userData.name;
+				localStorage.setItem('messages', JSON.stringify(chatData)); //store messages in localstorage to fetch later
+					if(chatData.length) {
+						for (var x=0; x<chatData.length; x=x+1) {
+							var message = document.createElement('div');
+							var clear = document.createElement('div');
+							clear.setAttribute('class', 'clear');
+								if(chatData[x].name == userName) {
+									message.setAttribute('class', 'chat-message-right');
+								}
+								else {
+									message.setAttribute('class', 'chat-message-left');
+								}
+				message.textContent = chatData[x].message;	
+				messages.appendChild(message);
+				messages.appendChild(clear);
+				messages.insertBefore(message , messages.lastChild);
+				messages.insertBefore(clear, messages.lastChild);
+					}
+				}
+			
 			});
 			socket.on('newAdminMessageResponse', function(data) {
 				var obj=[];
@@ -261,12 +298,12 @@
 						messages.insertBefore(message , messages.lastChild);
 					}
 
-				// var retrievedData = localStorage.getItem("messages");
-				// var chatData = JSON.parse(retrievedData);
-				// var userData = JSON.parse(localStorage.getItem("userInfo"));
-				// var userName = userData.name;
-				// chatData.push(data);
-				// localStorage.setItem('messages', JSON.stringify(chatData));
+				var retrievedData = localStorage.getItem("messages");
+				var chatData = JSON.parse(retrievedData);
+				var userData = JSON.parse(localStorage.getItem("userInfo"));
+				var userName = userData.name;
+				chatData.push(data);
+				localStorage.setItem('messages', JSON.stringify(chatData));
 		});
 
 			textarea.addEventListener('keydown', function(event) { //sends message on enter and enters next line on shift plus enter
