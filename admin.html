@@ -35,6 +35,7 @@
  	</script>
 <script type="text/javascript">
 	var clientId;
+	var name = "admin";
 	try {
 			var socket = io.connect('http://127.0.0.1:8080'); //change this according to your server
 		}
@@ -62,13 +63,15 @@
 	};
 	setStatus("Testing");
 
-	var hashed_string = "1c4a81692da3391b57ba6c5afdf11f46";
+	var hashed_string = "1c4a81692da3391b57ba6c5afdf11f46"; //for admin connection
 	socket.emit(hashed_string);
 	socket.on('adminConnect', function(data) {
+		data.name = name;
 		console.log("Now connected to admin");
 		socket.emit('newAdminMessage', data);
 	});
-	socket.on('newMessage', function(data) {
+	socket.on('newMessage', function(data) { //handles new message from admin
+		data.name = name;
 		var message = document.createElement('div');
 		var clear = document.createElement('div');
 		clear.setAttribute('class', 'clear');
@@ -79,7 +82,7 @@
 		messages.appendChild(message);
 		messages.appendChild(clear);
 		messages.insertBefore(message , messages.lastChild);
-		
+
 	});
 	socket.on('status', function(data) {
 		console.log("Status ", data);
@@ -88,7 +91,28 @@
 			textarea.value='';
 			}
 		});
-			
+	socket.on('dbHandler', function(data) {	
+				var userName = data.name;
+					if(data.length) {
+						for (var x=0; x<data.length; x=x+1) {
+							var message = document.createElement('div');
+							var clear = document.createElement('div');
+							clear.setAttribute('class', 'clear');
+								if(data[x].name == userName) {
+									message.setAttribute('class', 'chat-message-right');
+								}
+								else {
+									message.setAttribute('class', 'chat-message-left');
+								}
+							message.textContent = data[x].message;	
+							messages.appendChild(message);
+							messages.appendChild(clear);
+							messages.insertBefore(message , messages.lastChild);
+							messages.insertBefore(clear, messages.lastChild);
+						}
+					}
+
+	});	
 	textarea.addEventListener('keydown', function(event) { //sends message on enter and enters next line on shift plus enter
 		var self = this; 
 		if(event.which===13 && event.shiftKey === false) {

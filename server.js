@@ -46,6 +46,11 @@ mongo.connect('mongodb://127.0.0.1/chat', function(err, db){ //change collection
 		});
 		socket.on(hashed_string, function(data) {
 			admin = socket;
+			col.find().limit(100).sort({_id : 1}).toArray(function(err, res) {  //get previous 100 chat messages from collection
+			console.log("Res : " ,res);
+			if(!err && admin!=undefined) {
+				admin.emit('dbHandler', res);
+			}
 			admin.on('newAdminMessage', function(data) {
 				console.log("admin response");
 				var clientid = data.id;
@@ -53,9 +58,7 @@ mongo.connect('mongodb://127.0.0.1/chat', function(err, db){ //change collection
 				clients[clientid].emit('newAdminMessageResponse', data);
 			});
 		});
-		
-		col.find().limit(100).sort({_id : 1}).toArray(function(err, res) {  //get previous 100 chat messages from collection
-			if(err) throw err;
+
 		});
 		socket.on('newEmail', function(data) {
 		console.log(data);

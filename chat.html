@@ -10,7 +10,7 @@
  	<div id="chatBox"><div onclick="closeChat()" id="close">X</div> <br><br>
  	<div class='printchatbox' id='printchatbox'>
 		<div class="chat">
-			<div class="chat-messages"></div> <!-- chat messages are populated here-->
+			<div class="chat-messages" id ="div1"></div> <!-- chat messages are populated here-->
 			<textarea class="chat-text-area" placeholder="Type message"></textarea><!-- Chat messages are entered here -->
 			<div class="chat-status">Status : <span>Idle</span></div> <!--status for testing messages -->
 		</div>
@@ -23,14 +23,24 @@
  		{
  			$('#chat').fadeOut(500);
  			$('#chatBox').fadeIn(1000);
+ 			scroll();
 		 }
  		function closeChat()
  		{
  			$('#chatBox').fadeOut(500);
  			$('#chat').fadeIn(1000);
  		}
- 	</script>
+ 		function scroll() {
+ 			var d = $('#div1');
+			d.scrollTop(d.prop("scrollHeight"));
+		}
+		
+		$(function() {
+			scroll();
+		});
+	</script>
 	<script type="text/javascript">
+	$('#div1').scrollTop($('#div1')[0].scrollHeight);
 		(function() 
 		{
 			var givingIntro = 0; //flag for testing whether usr is entering normal chat message(0) , name(1) or email id(2)
@@ -70,6 +80,7 @@
 					message.textContent = data; //populate it with the message data
 					messages.appendChild(message);
 					messages.insertBefore(message , messages.lastChild);
+					scroll();
 					givingIntro = 1; //change flag to now ask for email
 				});
 			}
@@ -110,6 +121,7 @@
 				messages.appendChild(clear);
 				messages.insertBefore(message , messages.lastChild);
 				messages.insertBefore(clear, messages.lastChild);
+				scroll();
 						}
 					}
 			});
@@ -146,6 +158,7 @@
 				messages.appendChild(clear);
 				messages.insertBefore(message , messages.lastChild);
 				messages.insertBefore(clear, messages.lastChild);
+				scroll();
 					}
 				}
 			
@@ -163,6 +176,7 @@
 				messages.appendChild(clear);
 				messages.insertBefore(message , messages.lastChild);
 				messages.insertBefore(clear, messages.lastChild);
+				scroll();
 				var retrievedData = localStorage.getItem("userInfo");
 				var chatData = JSON.parse(retrievedData);
 				chatData.email=data.email;
@@ -189,6 +203,7 @@
 						messages.appendChild(clear);
 						messages.insertBefore(message , messages.lastChild);
 						messages.insertBefore(clear, messages.lastChild);
+						
 					}
 				}
 					else {
@@ -200,8 +215,9 @@
 						messages.appendChild(message);
 						messages.appendChild(clear);
 						messages.insertBefore(message , messages.lastChild);
+						
 					}
-
+					scroll();
 				var retrievedData = localStorage.getItem("messages");
 				var chatData = JSON.parse(retrievedData);
 				 var userData = JSON.parse(localStorage.getItem("userInfo"));
@@ -223,6 +239,7 @@
 				messages.appendChild(clear);
 				messages.insertBefore(message , messages.lastChild);
 				messages.insertBefore(clear, messages.lastChild);
+				scroll();
 
 			});
 
@@ -241,6 +258,7 @@
 				messages.insertBefore(message , messages.lastChild);
 				messages.insertBefore(clear, messages.lastChild);
 				givingIntro = 0;
+
 				
 			});
 
@@ -297,7 +315,7 @@
 						messages.appendChild(clear);
 						messages.insertBefore(message , messages.lastChild);
 					}
-
+					scroll();
 				var retrievedData = localStorage.getItem("messages");
 				var chatData = JSON.parse(retrievedData);
 				var userData = JSON.parse(localStorage.getItem("userInfo"));
