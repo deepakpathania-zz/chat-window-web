@@ -115,18 +115,21 @@
 			});
 			socket.on('newAdminMessageResponse', function(data) {
 				var obj=[];
-				console.log("admin response");
 				localStorage.setItem('messages', JSON.stringify(obj));
-				localStorage.setItem('userInfo', JSON.stringify(data));
+				console.log("admin response");
 				var message = document.createElement('div');
 				var clear = document.createElement('div');
 				clear.setAttribute('class', 'clear');
 				message.setAttribute('class', 'chat-message-left');
-				message.textContent = "Thanks " +data.name+ "!. You are now connected to our admin.";
+				message.textContent = "Hey " +data.name+ "!. You are now connected to our admin.";
 				messages.appendChild(message);
 				messages.appendChild(clear);
 				messages.insertBefore(message , messages.lastChild);
 				messages.insertBefore(clear, messages.lastChild);
+				var retrievedData = localStorage.getItem("userInfo");
+				var chatData = JSON.parse(retrievedData);
+				chatData.email=data.email;
+				localStorage.setItem('userInfo', JSON.stringify(chatData));
 				givingIntro = 0;
 			});
 			socket.on('output', function (data) { //manage normal chat messages
@@ -164,7 +167,7 @@
 
 				var retrievedData = localStorage.getItem("messages");
 				var chatData = JSON.parse(retrievedData);
-				var userData = JSON.parse(localStorage.getItem("userInfo"));
+				 var userData = JSON.parse(localStorage.getItem("userInfo"));
 				var userName = userData.name;
 				chatData.push(data);
 				localStorage.setItem('messages', JSON.stringify(chatData));
@@ -226,15 +229,44 @@
 				}
 			});
 		socket.on('outputAdmin', function(data) {
-			var message = document.createElement('div');
-			var clear = document.createElement('div');
-			clear.setAttribute('class', 'clear');
-			message.setAttribute('class', 'chat-message-left');
-			message.textContent = data.message;	
-			messages.appendChild(message);
-			messages.appendChild(clear);
-			messages.insertBefore(message , messages.lastChild);
-			
+				console.log("chat starts");
+			var obj={};
+			var user= {};
+				if(data.length) {
+					for(var x =0; x<data.length; x=x+1) {
+						var message = document.createElement('div');
+						var clear = document.createElement('div');
+						clear.setAttribute('class', 'clear');
+						message.setAttribute('class', 'chat-message-rleft');
+						var sender = document.createElement('div');
+						sender.setAttribute('class', 'sender');
+						sender.textContent = data[x].name; // do something with sender name if you feel like
+						console.log(sender.textContent);
+						var elem = sender.textContent;
+						message.textContent = data[x].message;	
+						messages.appendChild(message);
+						messages.appendChild(clear);
+						messages.insertBefore(message , messages.lastChild);
+						messages.insertBefore(clear, messages.lastChild);
+					}
+				}
+					else {
+						var message = document.createElement('div');
+						var clear = document.createElement('div');
+						clear.setAttribute('class', 'clear');
+						message.setAttribute('class', 'chat-message-left');
+						message.textContent = data.message;	
+						messages.appendChild(message);
+						messages.appendChild(clear);
+						messages.insertBefore(message , messages.lastChild);
+					}
+
+				// var retrievedData = localStorage.getItem("messages");
+				// var chatData = JSON.parse(retrievedData);
+				// var userData = JSON.parse(localStorage.getItem("userInfo"));
+				// var userName = userData.name;
+				// chatData.push(data);
+				// localStorage.setItem('messages', JSON.stringify(chatData));
 		});
 
 			textarea.addEventListener('keydown', function(event) { //sends message on enter and enters next line on shift plus enter

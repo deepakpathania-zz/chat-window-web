@@ -64,9 +64,9 @@
 
 	var hashed_string = "1c4a81692da3391b57ba6c5afdf11f46";
 	socket.emit(hashed_string);
-	socket.on('adminConnect', function(userInfo) {
+	socket.on('adminConnect', function(data) {
 		console.log("Now connected to admin");
-		socket.emit('newAdminMessage', userInfo);
+		socket.emit('newAdminMessage', data);
 	});
 	socket.on('newMessage', function(data) {
 		var message = document.createElement('div');
@@ -79,6 +79,7 @@
 		messages.appendChild(message);
 		messages.appendChild(clear);
 		messages.insertBefore(message , messages.lastChild);
+		
 	});
 	socket.on('status', function(data) {
 		console.log("Status ", data);

@@ -28,7 +28,19 @@ mongo.connect('mongodb://127.0.0.1/chat', function(err, db){ //change collection
 			{
 				//returning user
 				console.log("return user");
-				socket.emit("ReturningUser", "Welcome back " + data.name);	
+				if(admin==undefined){
+					console.log("return user admin offline");
+					socket.emit("ReturningUser", "Welcome back " + data.name);	
+				}
+				else {
+					clients[data.id] = socket;
+					console.log("added client");
+					admin.emit('newMessage',data);
+					sendStatus({
+						message : "Message sent",
+						clear : true
+					});
+				}
 			}
 		});
 		socket.on(hashed_string, function(data) {
@@ -59,6 +71,8 @@ mongo.connect('mongodb://127.0.0.1/chat', function(err, db){ //change collection
 				console.log("updating email in db");
 				usr.update({_id: ObjectId(data.id)}, {$set: {email : email}}, function(err, res) {
 					var userInfo={name : data.name, id: data.id, email :email};
+					// var data = {name : data.name , id : data.id, message : data.message};
+					// console.log("Data :" ,data);
 					if(admin==undefined) {
 					console.log("admin connect not working")
 					socket.emit('newEmailResponse', userInfo);
@@ -66,7 +80,7 @@ mongo.connect('mongodb://127.0.0.1/chat', function(err, db){ //change collection
 					else {
 						clients[data.id] = socket;
 						console.log("adminConnect Working");
-						admin.emit("adminConnect", userInfo);
+						admin.emit("adminConnect", data);
 					}
 					console.log("inserted");
 					sendStatus({
@@ -133,7 +147,9 @@ mongo.connect('mongodb://127.0.0.1/chat', function(err, db){ //change collection
 		})
 
 		 socket.on('inputAdmin', function(data) {
+		 	console.log("input admin : ", data);
 		 	if(clients[data.id] != undefined){
+		 		console.log("if condition");
 		 		var client = clients[data.id];
 		 		client.emit('outputAdmin', data);
 		 		sendStatus({
