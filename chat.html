@@ -172,14 +172,14 @@
 				var clear = document.createElement('div');
 				clear.setAttribute('class', 'clear');
 				message.setAttribute('class', 'chat-message-left');
-				message.textContent = "Hey " +data.name+ "!. You are now connected to our admin.";
+				var retrievedData = localStorage.getItem("userInfo");
+				var chatData = JSON.parse(retrievedData);
+				message.textContent = "Hey " +chatData.name+ "!. You are now connected to our admin.";
 				messages.appendChild(message);
 				messages.appendChild(clear);
 				messages.insertBefore(message , messages.lastChild);
 				messages.insertBefore(clear, messages.lastChild);
 				scroll();
-				var retrievedData = localStorage.getItem("userInfo");
-				var chatData = JSON.parse(retrievedData);
 				chatData.email=data.email;
 				localStorage.setItem('userInfo', JSON.stringify(chatData));
 				givingIntro = 0;

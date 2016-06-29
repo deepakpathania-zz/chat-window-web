@@ -123,6 +123,8 @@ mongo.connect('mongodb://127.0.0.1/chat', function(err, db){ //change collection
 
 		socket.on('input', function(data) { //user entered normal chat message
 			var id;
+			console.log("Data from user :  ", data);
+			var uid = data.id;
 			var name = data.name;
 			var message = data.message;
 			var time = new Date();
@@ -133,10 +135,10 @@ mongo.connect('mongodb://127.0.0.1/chat', function(err, db){ //change collection
 				sendStatus("Name and message required");
 			}
 			else {
-				col.insert({name : name, message : message, created : time} , function() { //insert chat messaged in db
+				col.insert({name : name, message : message, created : time, uid : uid} , function() { //insert chat messaged in db
 				console.log("inserted");
 				if(admin!=undefined) {
-					// admin.emit('newMessage',data);
+					admin.emit('newMessage',data);
 				}
 				socket.emit('output',data);
 				sendStatus({
@@ -149,12 +151,13 @@ mongo.connect('mongodb://127.0.0.1/chat', function(err, db){ //change collection
 		})
 
 		 socket.on('inputAdmin', function(data) {
-		 	var id;
+		 	console.log("Data I can store : ", data);
+		 	var uid =data.id; 
 			var name = data.name;
 			var message = data.message;
 			var time = new Date();
 			data.created = time;
-		 	col.insert({name : name, message : message, created : time} , function() {
+		 	col.insert({name : name, message : message, created : time, uid : uid} , function() {
 		 	console.log("input admin : ", data);
 		 	if(clients[data.id] != undefined){
 		 		console.log("if condition");

@@ -24,41 +24,7 @@
         <input type="text" placeholder="search" />
         <i class="fa fa-search"></i>
       </div>
-      <ul class="list">
-        <li class="clearfix">
-          <img src="img/user.png" alt="avatar" style="border-radius:30px;width:50px" />
-           <a href="#" id="link_1">
-          <div class="about">
-            <div class="name">Client 1</div>
-            <div class="status">
-            </div>
-          </div>
-        </li>
-        </a>
-       
-        <li class="clearfix">
-          <img src="img/user.png" alt="avatar" style="border-radius:30px;width:50px" />
-           <a href="#" id="link_2">
-          <div class="about">
-            <div class="name">Client 2</div>
-            <div class="status">
-            </div>
-          </div>
-        </li>
-        </a>
-
-        <li class="clearfix">
-         <img src="img/user.png" alt="avatar" style="border-radius:30px;width:50px" />
-           <a href="#" id="link_3">
-          <div class="about">
-            <div class="name">Client 3</div>
-            <div class="status">
-
-            </div>
-          </div>
-        </li>
-        </a>
-        </ul>
+      <ul class="list"></ul> <!--clients are populated here -->
     </div>
     
     <div class="chat">
@@ -158,7 +124,6 @@ $(document).ready(function(){
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"> </script>
 <script type="text/javascript">
   var clientId;
-  var name = "admin";
   try {
       var socket = io.connect('http://127.0.0.1:8080'); //change this according to your server
       scroll();
@@ -172,6 +137,7 @@ $(document).ready(function(){
   status = getNode('.chat-status span');
   textarea = getNode('.chat-text-area');
   messages = getNode('.chat-messages');
+  user = getNode('.list');
   var sendStatus = function(s) {
     socket.emit('status', s);
   };
@@ -195,12 +161,20 @@ $(document).ready(function(){
     socket.emit('newAdminMessage', data);
   });
   socket.on('newMessage', function(data) { //handles new message from admin
-    console.log('newMessage div');
-    data.name = name;
+    name = data.name;
+    id = data.id;
+    console.log("name : " ,name);
+    console.log("id :" ,id);
+    if(document.getElementById(id)===null) {
+      var client = document.createElement('li');
+      client.setAttribute('class', 'clearfix');
+      client.innerHTML = '<a href="#" <div id="' +id+ '"class="name">' +name+ '</div></a>';
+      user.appendChild(client);
+      user.insertBefore(client, user.lastChild);
+    }
     var message = document.createElement('div');
     var clear = document.createElement('div');
     clear.setAttribute('class', 'clear');
-    if(data.message){
     message.setAttribute('class', 'message my-message');
     message.textContent = data.message; 
     console.log(data);
@@ -208,7 +182,6 @@ $(document).ready(function(){
     messages.appendChild(message);
     messages.appendChild(clear);
     messages.insertBefore(message , messages.lastChild);
-    }
     scroll();
 
   });
@@ -250,7 +223,6 @@ $(document).ready(function(){
         id : clientId,
         message : self.value
       });
-      console.log("textarea div");
       var message = document.createElement('div');
       var clear = document.createElement('div');
       clear.setAttribute('class', 'clear');
