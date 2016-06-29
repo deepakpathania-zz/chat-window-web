@@ -80,7 +80,7 @@
 
       <!-- end chat-header -->
       
-      <div class="chat-messages chat-history"></div> <!-- end chat-history -->
+      <div class="chat-messages chat-history" id="div1"></div> <!-- end chat-history -->
       
       <div class="chat-message clearfix">
         <textarea name="message-to-send" id="message-to-send" class= "chat-text-area" placeholder ="Type your message" rows="3"></textarea>        
@@ -144,6 +144,16 @@ $(document).ready(function(){
 });
     
 </script>  
+<script type="text/javascript">
+    function scroll() { //scroll to bottom of messages
+    var d = $('#div1');
+    d.scrollTop(d.prop("scrollHeight"));
+    }
+    
+    $(function() {
+      scroll();
+    });
+  </script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.8/socket.io.js"></script>  
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"> </script>
 <script type="text/javascript">
@@ -151,6 +161,7 @@ $(document).ready(function(){
   var name = "admin";
   try {
       var socket = io.connect('http://127.0.0.1:8080'); //change this according to your server
+      scroll();
     }
   catch(e) {
       //Manage the exception gracefully. Send a PR after doing it :v
@@ -184,10 +195,12 @@ $(document).ready(function(){
     socket.emit('newAdminMessage', data);
   });
   socket.on('newMessage', function(data) { //handles new message from admin
+    console.log('newMessage div');
     data.name = name;
     var message = document.createElement('div');
     var clear = document.createElement('div');
     clear.setAttribute('class', 'clear');
+    if(data.message){
     message.setAttribute('class', 'message my-message');
     message.textContent = data.message; 
     console.log(data);
@@ -195,6 +208,8 @@ $(document).ready(function(){
     messages.appendChild(message);
     messages.appendChild(clear);
     messages.insertBefore(message , messages.lastChild);
+    }
+    scroll();
 
   });
   socket.on('status', function(data) { //clears the textarea and changes the status
@@ -222,6 +237,7 @@ $(document).ready(function(){
               messages.appendChild(clear);
               messages.insertBefore(message , messages.lastChild);
               messages.insertBefore(clear, messages.lastChild);
+              scroll();
             }
           }
 
@@ -234,6 +250,7 @@ $(document).ready(function(){
         id : clientId,
         message : self.value
       });
+      console.log("textarea div");
       var message = document.createElement('div');
       var clear = document.createElement('div');
       clear.setAttribute('class', 'clear');
@@ -242,6 +259,7 @@ $(document).ready(function(){
       messages.appendChild(message);
       messages.appendChild(clear);
       messages.insertBefore(message , messages.lastChild);
+      scroll();
     }
 
   });

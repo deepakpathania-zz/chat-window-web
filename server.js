@@ -136,7 +136,7 @@ mongo.connect('mongodb://127.0.0.1/chat', function(err, db){ //change collection
 				col.insert({name : name, message : message, created : time} , function() { //insert chat messaged in db
 				console.log("inserted");
 				if(admin!=undefined) {
-					admin.emit('newMessage',data);
+					// admin.emit('newMessage',data);
 				}
 				socket.emit('output',data);
 				sendStatus({
