@@ -30,9 +30,10 @@
  			$('#chatBox').fadeOut(500);
  			$('#chat').fadeIn(1000);
  		}
- 		function scroll() {
- 			var d = $('#div1');
-			d.scrollTop(d.prop("scrollHeight"));
+ 		function scroll() { //scroll to bottom of messages
+ 		var d = $('#div1');
+		d.scrollTop(d.prop("scrollHeight"));
+
 		}
 		
 		$(function() {
@@ -63,7 +64,7 @@
 		setStatus("Testing");
 
 		try {
-			var socket = io.connect('http://192.168.182.86:8080'); //change this according to your server
+			var socket = io.connect('http://127.0.0.1:8080'); //change this according to your server
 		}
 		catch(e) {
 			//Manage the exception gracefully. Send a PR after doing it :v
