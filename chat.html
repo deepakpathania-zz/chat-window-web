@@ -166,6 +166,7 @@
 			});
 			socket.on('newAdminMessageResponse', function(data) {
 				var obj=[];
+				console.log("test message");
 				localStorage.setItem('messages', JSON.stringify(obj));
 				console.log("admin response");
 				var message = document.createElement('div');
@@ -204,6 +205,7 @@
 						messages.appendChild(clear);
 						messages.insertBefore(message , messages.lastChild);
 						messages.insertBefore(clear, messages.lastChild);
+
 						
 					}
 				}
@@ -219,6 +221,7 @@
 						
 					}
 					scroll();
+				console.log("display");
 				var retrievedData = localStorage.getItem("messages");
 				var chatData = JSON.parse(retrievedData);
 				 var userData = JSON.parse(localStorage.getItem("userInfo"));
@@ -293,7 +296,7 @@
 						var message = document.createElement('div');
 						var clear = document.createElement('div');
 						clear.setAttribute('class', 'clear');
-						message.setAttribute('class', 'chat-message-rleft');
+						message.setAttribute('class', 'chat-message-left');
 						var sender = document.createElement('div');
 						sender.setAttribute('class', 'sender');
 						sender.textContent = data[x].name; // do something with sender name if you feel like
@@ -304,6 +307,7 @@
 						messages.appendChild(clear);
 						messages.insertBefore(message , messages.lastChild);
 						messages.insertBefore(clear, messages.lastChild);
+						console.log("display message 1");
 					}
 				}
 					else {
@@ -315,6 +319,7 @@
 						messages.appendChild(message);
 						messages.appendChild(clear);
 						messages.insertBefore(message , messages.lastChild);
+						console.log("display message 2");
 					}
 					scroll();
 				var retrievedData = localStorage.getItem("messages");

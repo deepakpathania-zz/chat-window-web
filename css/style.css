@@ -68,7 +68,7 @@ body {
 }
 .chat .chat-header {
   padding: 20px;
-  border-bottom: 2px solid white;
+  border-bottom: 2px solid #C5DDEB;
 }
 .chat .chat-header img {
   float: left;
@@ -93,7 +93,7 @@ body {
 }
 .chat .chat-history {
   padding: 30px 30px 20px;
-  border-bottom: 2px solid white;
+  border-bottom: 2px solid #C5DDEB;
   overflow-y: scroll;
   height: 400px;
 }

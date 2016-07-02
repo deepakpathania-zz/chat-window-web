@@ -46,7 +46,9 @@
 
       <!-- end chat-header -->
       
-      <div class="chat-messages chat-history" id="div1"></div> <!-- end chat-history -->
+      <div class="chat-messages chat-history" id="div1">
+        <div class="chats"></div>
+      </div> <!-- end chat-history -->
       
       <div class="chat-message clearfix">
         <textarea name="message-to-send" id="message-to-send" class= "chat-text-area" placeholder ="Type your message" rows="3"></textarea>        
@@ -137,6 +139,7 @@ $(document).ready(function(){
   status = getNode('.chat-status span');
   textarea = getNode('.chat-text-area');
   messages = getNode('.chat-messages');
+  histories = getNode('.chats'); 
   user = getNode('.list');
   var sendStatus = function(s) {
     socket.emit('status', s);
@@ -162,28 +165,38 @@ $(document).ready(function(){
   });
   socket.on('newMessage', function(data) { //handles new message from admin
     name = data.name;
-    id = data.id;
+    id = data.id + "li";
+    clientId = data.id;
     console.log("name : " ,name);
     console.log("id :" ,id);
     if(document.getElementById(id)===null) {
       var client = document.createElement('li');
       client.setAttribute('class', 'clearfix');
       client.innerHTML = '<a href="#" <div id="' +id+ '"class="name">' +name+ '</div></a>';
-      user.appendChild(client);
-      user.insertBefore(client, user.lastChild);
+      var history = document.createElement('div');
+      history.setAttribute('id', clientId);
+      history.setAttribute("class","userchat");
     }
-    var message = document.createElement('div');
-    var clear = document.createElement('div');
-    clear.setAttribute('class', 'clear');
-    message.setAttribute('class', 'message my-message');
-    message.textContent = data.message; 
-    console.log(data);
-    clientId = data.id;
-    messages.appendChild(message);
-    messages.appendChild(clear);
-    messages.insertBefore(message , messages.lastChild);
-    scroll();
-
+    else {
+      var client = document.getElementById(id);
+      var history = document.getElementById(clientId);
+      }
+      $(".userchat").hide();
+      $("#"+clientId).show();
+      user.appendChild(client);
+      user.insertBefore(client, user.lastChild); 
+      var message = document.createElement('div');
+      var clear = document.createElement('div');
+      clear.setAttribute('class', 'clear');
+      message.setAttribute('class', 'message my-message');
+      message.textContent = data.message; 
+      history.appendChild(message);
+      history.appendChild(clear);
+      histories.appendChild(history);
+      console.log(histories);
+      console.log("working newMessage");
+      history.insertBefore(message, history.lastChild);
+      scroll();
   });
   socket.on('status', function(data) { //clears the textarea and changes the status
     console.log("Status ", data);
@@ -194,8 +207,12 @@ $(document).ready(function(){
     });
   socket.on('dbHandler', function(data) { //adds the chat messages to database
         var userName = data.name;
+        clientId = data.id;
           if(data.length) {
             for (var x=0; x<data.length; x=x+1) {
+              var history = document.createElement('div');
+              history.setAttribute('id', clientId);
+              history.setAttribute("class","userchat");
               var message = document.createElement('div');
               var clear = document.createElement('div');
               clear.setAttribute('class', 'clear');
@@ -205,12 +222,12 @@ $(document).ready(function(){
                 else {
                   message.setAttribute('class', 'message my-message');
                 }
-              message.textContent = data[x].message;  
-              messages.appendChild(message);
-              messages.appendChild(clear);
-              messages.insertBefore(message , messages.lastChild);
-              messages.insertBefore(clear, messages.lastChild);
-              scroll();
+            message.textContent = data.message; 
+            history.appendChild(message);
+            history.appendChild(clear);
+            console.log(histories);
+            history.insertBefore(message, history.lastChild);
+            scroll();
             }
           }
 
@@ -223,16 +240,23 @@ $(document).ready(function(){
         id : clientId,
         message : self.value
       });
-      var message = document.createElement('div');
-      var clear = document.createElement('div');
-      clear.setAttribute('class', 'clear');
-      message.setAttribute('class', 'message other-message align-right');
-      message.textContent = self.value; 
-      messages.appendChild(message);
-      messages.appendChild(clear);
-      messages.insertBefore(message , messages.lastChild);
-      scroll();
-    }
+              var history = document.getElementById(clientId);
+              var message = document.createElement('div');
+              history.setAttribute('id', clientId);
+              history.setAttribute("class","userchat");
+              var clear = document.createElement('div');
+              clear.setAttribute('class', 'clear');
+              var message = document.createElement('div');
+              var clear = document.createElement('div');
+              clear.setAttribute('class', 'clear');
+              message.setAttribute('class', 'message other-message align-right');
+              message.textContent = self.value; 
+              history.appendChild(message);
+              history.appendChild(clear);
+              console.log(histories);
+              history.insertBefore(message, history.lastChild);
+              scroll();
+      }
 
   });
 
