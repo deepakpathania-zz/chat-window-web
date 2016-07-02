@@ -125,6 +125,18 @@ $(document).ready(function(){
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.8/socket.io.js"></script>  
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"> </script>
 <script type="text/javascript">
+  
+$(".people-list").on('click', '.list li ' , function(){
+  var id=$(this).attr("id");
+  console.log(id);
+  id=id.split('_');
+  id=id[0];
+  $(".userchat").hide();
+  $("#"+id).show();
+  clientId=id;
+});
+</script>
+<script type="text/javascript">
   var clientId;
   try {
       var socket = io.connect('http://127.0.0.1:8080'); //change this according to your server
@@ -165,14 +177,15 @@ $(document).ready(function(){
   });
   socket.on('newMessage', function(data) { //handles new message from admin
     name = data.name;
-    id = data.id + "li";
+    id = data.id + "_li";
     clientId = data.id;
     console.log("name : " ,name);
     console.log("id :" ,id);
     if(document.getElementById(id)===null) {
       var client = document.createElement('li');
-      client.setAttribute('class', 'clearfix');
-      client.innerHTML = '<a href="#" <div id="' +id+ '"class="name">' +name+ '</div></a>';
+      client.setAttribute('class', "clearfix");
+      client.setAttribute('id',id);
+      client.innerHTML = '<a href="#" class="name">' +name+ '</a>';
       var history = document.createElement('div');
       history.setAttribute('id', clientId);
       history.setAttribute("class","userchat");
