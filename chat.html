@@ -4,20 +4,26 @@
 	<meta charset="utf-8">
 	<title>Chat</title>
 	<link rel="stylesheet" type="text/css" href="css/main.css">
+
+	 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/css/materialize.min.css">
+	 <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css">
+	 <link href='https://fonts.googleapis.com/css?family=Roboto:400,300italic,500' rel='stylesheet' type='text/css'>
 </head>
 <body>
- 	<div id="chat" onClick="open_chatbox();"> Chat Now </div> <!--Chat window tile, expands and closes on click  -->
- 	<div id="chatBox"><div onclick="closeChat()" id="close">X</div> <br><br>
+ 	<div id="chat" onClick="open_chatbox();"> <a class="btn-floating btn-large waves-effect waves-light red"><i class="material-icons fa fa-comments-o fa-7x"></i></a>
+</div> <!--Chat window tile, expands and closes on click  -->
+ 	<div id="chatBox"><div onclick="closeChat()" id="close"><div class="chat-heading">New Conversation</div><div class="x">X</div></div> <br><br>
  	<div class='printchatbox' id='printchatbox'>
 		<div class="chat">
 			<div class="chat-messages" id ="div1"></div> <!-- chat messages are populated here-->
-			<textarea class="chat-text-area" placeholder="Type message"></textarea><!-- Chat messages are entered here -->
-			<div class="chat-status">Status : <span>Idle</span></div> <!--status for testing messages -->
+			<textarea class="chat-text-area" placeholder="Send a message..."></textarea><!-- Chat messages are entered here -->
+			<div class="chat-status"></div> <!--status for testing messages -->
 		</div>
 	</div>
 
 	<script type="text/javascript" src="https://cdn.socket.io/socket.io-1.4.5.js"></script>  
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"> </script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.97.6/js/materialize.min.js"></script>
 	<script type="text/javascript"> //customize opening and closing of chat box here
  		function open_chatbox()
  		{
