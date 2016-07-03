@@ -10,10 +10,10 @@
 	 <link href='https://fonts.googleapis.com/css?family=Roboto:400,300italic,500' rel='stylesheet' type='text/css'>
 </head>
 <body>
- 	<div id="chat" onClick="open_chatbox();"> <a class="btn-floating btn-large waves-effect waves-light red"><i class="material-icons fa fa-comments-o fa-7x"></i></a>
+ 	<div id="chat" onClick="open_chatbox();"> <a class="btn-floating btn-large waves-effect waves-light blue"><i class="material-icons fa fa-comments-o fa-7x"></i></a>
 </div> <!--Chat window tile, expands and closes on click  -->
  	<div id="chatBox"><div onclick="closeChat()" id="close"><div class="chat-heading">New Conversation</div><div class="x">X</div></div> <br><br>
- 	<div class='printchatbox' id='printchatbox'>
+ 	<div class='printchatbox msg_container_base' id='printchatbox'>
 		<div class="chat">
 			<div class="chat-messages" id ="div1"></div> <!-- chat messages are populated here-->
 			<textarea class="chat-text-area" placeholder="Send a message..."></textarea><!-- Chat messages are entered here -->
