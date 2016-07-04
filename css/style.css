@@ -20,6 +20,8 @@ body {
 .people-list {
   width: 260px;
   float: left;
+  max-height: 600px;
+  overflow :;
 }
 .people-list .search {
   padding: 20px;
