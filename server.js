@@ -5,7 +5,7 @@ console.log("working");
 var admin;
 var clients = {};
 
-var hashed_string = "1c4a81692da3391b57ba6c5afdf11f46";
+var hashed_string = "1c4a81692da3391b57ba6c5afdf11f46"; //emitted by admin to check whether admin is online or not
 mongo.connect('mongodb://127.0.0.1/chat', function(err, db){ //change collection name from chat to your collection name
 	if(err) {
 		throw err;
@@ -46,10 +46,10 @@ mongo.connect('mongodb://127.0.0.1/chat', function(err, db){ //change collection
 		});
 		socket.on(hashed_string, function(data) {
 			admin = socket;
-			col.find().limit(100).sort({_id : 1}).toArray(function(err, res) {  //get previous 100 chat messages from collection
+			usr.find().limit(100).sort({_id : 1}).toArray(function(err, res) {  //get previous 100 chat messages from collection
 			console.log("Res : " ,res);
 			if(!err && admin!=undefined) {
-				admin.emit('dbHandler', res);
+				admin.emit('dbHandler', res); //modify to get personal messages of right users.
 			}
 			admin.on('newAdminMessage', function(data) {
 				console.log("admin response");
@@ -138,7 +138,7 @@ mongo.connect('mongodb://127.0.0.1/chat', function(err, db){ //change collection
 				col.insert({name : name, message : message, created : time, uid : uid} , function() { //insert chat messaged in db
 				console.log("inserted");
 				if(admin!=undefined) {
-					console.log("amin not undefined");
+					console.log("admin not undefined");
 					admin.emit('newMessage',data);
 				}
 				socket.emit('output',data);
@@ -149,8 +149,15 @@ mongo.connect('mongodb://127.0.0.1/chat', function(err, db){ //change collection
 			});
 		}
 
-		})
+		});
 
+		socket.on('getMessagesFromUser', function (data) {
+			console.log("getMessagesFromUser data : " , data);
+			col.find({uid : data}).limit(100).sort({_id : 1}).toArray(function(err, res) { 
+				console.log("sending messages : ", res);
+				admin.emit('getMessageResponse', res);
+			});
+		});
 		 socket.on('inputAdmin', function(data) {
 		 	console.log("Data I can store : ", data);
 		 	var uid =data.id; 

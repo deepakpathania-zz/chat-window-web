@@ -124,19 +124,33 @@ $(document).ready(function(){
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.8/socket.io.js"></script>  
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"> </script>
 <script type="text/javascript">
-  
+var selector = '.list li a';
+
+$(".list").on('click', "li", function(){
+    $(".list li a").removeClass('active');
+    $(this).find("a").addClass('active');
+})
+
+var firstclicked = {};  
 $(".people-list").on('click', '.list li ' , function(){
   var id=$(this).attr("id");
   console.log(id);
   id=id.split('_');
   id=id[0];
+  clientId=id;
+  if(!firstclicked[id]) {
+    console.log("emitting clientId : ", clientId);
+    socket.emit('getMessagesFromUser',clientId);
+    firstclicked[id] = true;
+  }
   $(".userchat").hide();
   $("#"+id).show();
-  clientId=id;
 });
+
 </script>
 <script type="text/javascript">
   var clientId;
+
   try {
       var socket = io.connect('http://127.0.0.1:8080'); //change this according to your server
       scroll();
@@ -176,26 +190,30 @@ $(".people-list").on('click', '.list li ' , function(){
   });
   socket.on('newMessage', function(data) { //handles new message from admin
     name = data.name;
+    email = data.email;
+
     id = data.id + "_li";
     clientId = data.id;
     console.log("name : " ,name);
     console.log("id :" ,id);
     if(document.getElementById(id)===null) {
       var client = document.createElement('li');
-      client.setAttribute('class', "clearfix");
+      client.setAttribute('class', "clearfix ");
       client.setAttribute('id',id);
-      client.innerHTML = '<a href="#" class="name">' +name+ '</a>';
+      client.innerHTML = '<a href="#" class="name">' +name+ '<br/><span class="email">' +email+' </a>';
       var history = document.createElement('div');
       history.setAttribute('id', clientId);
       history.setAttribute("class","userchat");
+      user.appendChild(client); 
     }
     else {
       var client = document.getElementById(id);
       var history = document.getElementById(clientId);
+
       }
       $(".userchat").hide();
       $("#"+clientId).show();
-      user.appendChild(client);
+      firstclicked[clientId] = true;
       user.insertBefore(client, user.lastChild); 
       var message = document.createElement('div');
       var clear = document.createElement('div');
@@ -217,33 +235,79 @@ $(".people-list").on('click', '.list li ' , function(){
       textarea.value='';
       }
     });
-  socket.on('dbHandler', function(data) { //adds the chat messages to database
-        var userName = data.name;
-        clientId = data.id;
+  socket.on('dbHandler', function(data) { //gets the chat messages from database to be displayed on return of admin
+      console.log("inside db handler");
+        console.log("data : ", data);
           if(data.length) {
             for (var x=0; x<data.length; x=x+1) {
-              var history = document.createElement('div');
-              history.setAttribute('id', clientId);
-              history.setAttribute("class","userchat");
-              var message = document.createElement('div');
-              var clear = document.createElement('div');
-              clear.setAttribute('class', 'clear');
-                if(data[x].name == userName) { //fetches and displays according to sender
-                  message.setAttribute('class', 'message other-message align-right');
-                }
-                else {
-                  message.setAttribute('class', 'message my-message');
-                }
-            message.textContent = data.message; 
-            history.appendChild(message);
-            history.appendChild(clear);
-            console.log(histories);
-            history.insertBefore(message, history.lastChild);
+              id = data[x]._id + "_li";
+              clientId = data[x]._id;
+              firstclicked[clientId] = false;
+              console.log("clientId : " ,clientId);
+              email = data[x].email;
+              name = data[x].name;
+              // $(".people-list").on('click', '.list li ' , function(){
+              //   console.log("clientId inside click :" ,clientId);
+              //   socket.emit('getMessagesFromUser',clientId);
+              // });
+              console.log("data.length >1 ");
+              console.log("data[x] : " , data[x]);
+              var client = document.createElement('li');
+              client.setAttribute('class', "clearfix");
+              client.setAttribute('id',id);
+              if(data[x].name != null){
+              client.innerHTML = '<a href="#" class="name">' +name+ '<br/><span class="email">' +email+' </a>';
+              }
+              // var history = document.createElement('div');
+              // history.setAttribute('id', clientId);
+              // history.setAttribute("class","userchat");
+              // console.log("History : ", history);
+              // var message = document.createElement('div');
+              // var clear = document.createElement('div');
+              user.appendChild(client);
+              user.insertBefore(client, user.lastChild); 
+              // clear.setAttribute('class', 'clear');
+            //     if(data[x].name) { //fetches and displays according to sender
+            //       message.setAttribute('class', 'message other-message align-right');
+            //     }
+            //     else {
+            //       message.setAttribute('class', 'message my-message');
+            //     }
+            // message.textContent = data[x].message; 
+            // history.appendChild(message);
+            // history.appendChild(clear);
+            // console.log(histories);
+            // history.insertBefore(message, history.lastChild);
+            // histories.appendChild(history);
             scroll();
             }
           }
 
   }); 
+  socket.on('getMessageResponse', function(data) {
+    console.log( " Data : ", data);
+    var history = document.createElement('div');
+    history.setAttribute('id', data[0].uid);
+    history.setAttribute("class","userchat");
+  for (var x=0; x<data.length; x=x+1) {
+
+    var message = document.createElement('div');
+    var clear = document.createElement('div');
+    clear.setAttribute('class', 'clear');
+      if(data[x].name) { //fetches and displays according to sender
+           message.setAttribute('class', 'message other-message align-right');
+         }
+      else {
+         message.setAttribute('class', 'message my-message');
+        }
+        message.textContent = data[x].message; 
+        history.appendChild(message);
+        history.appendChild(clear);
+        console.log(histories);
+        history.insertBefore(message, history.lastChild);
+        histories.appendChild(history);
+      }
+  });
   textarea.addEventListener('keydown', function(event) { //sends message on enter and enters next line on shift plus enter
     var self = this; 
     if(event.which===13 && event.shiftKey === false) {
