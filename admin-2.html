@@ -29,19 +29,10 @@
     <div class="chat">
       <div class="chat-header clearfix" id ="div_1">
         <div class="chat-about">
-          <div class="chat-with">Client 1</div>
+        <div class="chat-with">
+        </div>
         </div>
       </div> 
-    <div class="chat-header clearfix" id ="div_2">
-        <div class="chat-about">
-          <div class="chat-with">Client 2</div>
-        </div>
-      </div>
-      <div class="chat-header clearfix" id ="div_3"> 
-        <div class="chat-about">
-          <div class="chat-with">Client 3</div>
-        </div>
-      </div>
 
       <!-- end chat-header -->
       
@@ -56,30 +47,8 @@
     </div> <!-- end chat -->
     
   </div> <!-- end container -->
->
-<script id="message-template" type="text/x-handlebars-template">
-  <li class="clearfix">
-    <div class="message-data align-right">
-      <span class="message-data-time" >{{time}}, Today</span> &nbsp; &nbsp;
-      <span class="message-data-name" >Olia</span> <i class="fa fa-circle me"></i>
-    </div>
-    <div class="message other-message float-right">
-      {{messageOutput}}
-    </div>
-  </li>
-</script>
 
-<script id="message-response-template" type="text/x-handlebars-template">
-  <li>
-    <div class="message-data">
-      <span class="message-data-name"><i class="fa fa-circle online"></i> Vincent</span>
-      <span class="message-data-time">{{time}}, Today</span>
-    </div>
-    <div class="message my-message">
-      {{response}}
-    </div>
-  </li>
-</script>
+
     <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>
 <script src='http://cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.0/handlebars.min.js'></script>
 <script src='http://cdnjs.cloudflare.com/ajax/libs/list.js/1.1.1/list.min.js'></script>
@@ -138,6 +107,8 @@ $(".people-list").on('click', '.list li ' , function(){
   id=id.split('_');
   id=id[0];
   clientId=id;
+
+  $(".chat-with").html($(this).find("a").html());
   if(!firstclicked[id]) {
     console.log("emitting clientId : ", clientId);
     socket.emit('getMessagesFromUser',clientId);
@@ -166,6 +137,7 @@ $(".people-list").on('click', '.list li ' , function(){
   messages = getNode('.chat-messages');
   histories = getNode('.chats'); 
   user = getNode('.list');
+  clientname = getNode('.chat-about');
   var sendStatus = function(s) {
     socket.emit('status', s);
   };
