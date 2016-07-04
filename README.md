@@ -48,11 +48,11 @@ It connects you to an admin if someone is online from the admin panel(checked by
 
 
 - Every time a new client is added, his name and chat history div is added dynamically to the client list. For returning users, the message is sent to the existing chat history div. The admin can switch among chats simply by clicking on the names of the clients in the client list.
+The last screenshot represents a returning user.
 
 
 ![demo7](https://cloud.githubusercontent.com/assets/15071438/16568212/05260574-4245-11e6-8bf0-056ef653c969.png)
 ![demo8](https://cloud.githubusercontent.com/assets/15071438/16568213/052dee4c-4245-11e6-9b4a-5fc62efec05b.png)
-
 
 
 - All of the messages and the user information is stored in localstorage on the client end to recognize returning users and fetch their older messages. On the admin end, the messages are fetched directly from the database by making use of client id to recognize the messages of different clients.
