@@ -60,4 +60,7 @@ It connects you to an admin if someone is online from the admin panel(checked by
 
 ![demo6](https://cloud.githubusercontent.com/assets/15071438/16568210/0505665c-4245-11e6-9c8e-b141d0cfb4e1.png)
 ![demo9](https://cloud.githubusercontent.com/assets/15071438/16568214/0538c3d0-4245-11e6-8515-fdbfcea5aa36.png)
+<<<<<<< HEAD
 
+=======
+>>>>>>> 9291f2584dc426be05d31c16d6221e01ee736d6d
