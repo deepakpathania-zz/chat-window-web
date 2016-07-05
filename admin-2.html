@@ -204,14 +204,8 @@ $(".people-list").on('click', '.list li ' , function(){
       var client = document.getElementById(id);
       var history = document.getElementById(clientId);
       console.log("2 get");
-    //   if(!($('#'+clientId+"_li a ").has(".new"))){
-    //     $('#'+clientId+"_li a ").append('<span class="new">New</span>');
-
-    // }      
-      
-      }
-      // $(".userchat").hide();
-    
+          
+      }    
       console.log(clientId);
       firstclicked[clientId] = true;
       user.insertBefore(client, user.firstChild); 
@@ -219,6 +213,9 @@ $(".people-list").on('click', '.list li ' , function(){
       var clear = document.createElement('div');
       clear.setAttribute('class', 'clear');
       message.setAttribute('class', 'message other-message align-right');
+      console.log("data length : " ,data.message.length);
+      if(data.message.length>0) {
+        console.log("in new message if");
       message.textContent = data.message; 
       history.appendChild(message);
       history.appendChild(clear);
@@ -227,6 +224,7 @@ $(".people-list").on('click', '.list li ' , function(){
       console.log("working newMessage");
       history.insertBefore(message, history.lastChild);
       scroll();
+    }
       console.log("currentId : ", currentId);
       console.log("clientId : ", clientId);
       if(currentId!=clientId) {
@@ -285,13 +283,15 @@ $(".people-list").on('click', '.list li ' , function(){
          }
       else {
          message.setAttribute('class', 'message my-message');
-        }
+        }if(data[x].message.length>0) {
+          console.log("in if getresponse");
         message.textContent = data[x].message; 
         history.appendChild(message);
         history.appendChild(clear);
         console.log(histories);
         history.insertBefore(message, history.lastChild);
         histories.appendChild(history);
+      }
       }
     scroll();
   });
