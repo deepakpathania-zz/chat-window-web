@@ -249,3 +249,12 @@ body {
   margin-top: -47px;
   margin-left: 26px;
 }
+.new {
+    padding: 3px;
+    color: #000;
+    border: 1px solid #444753;
+    border-radius: 15px;
+    background: #349A2D;
+    float: right;
+    font-size: 10px;
+}

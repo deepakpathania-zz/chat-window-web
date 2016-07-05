@@ -22,7 +22,7 @@ mongo.connect('mongodb://127.0.0.1/chat', function(err, db){ //change collection
 			{
 				// new user
 				console.log("new user");
-				socket.emit("newUserIntro", "Hello! What is your name?");
+				socket.emit("newUserIntro", "Hey! I'd love to assist you. May I know your name?");
 			} 
 			else 
 			{
@@ -68,7 +68,7 @@ mongo.connect('mongodb://127.0.0.1/chat', function(err, db){ //change collection
 					
 					console.log("Res : " ,res);
 					if(!err && admin!=undefined) {
-						admin.emit('dbHandler', res); //modify to get personal messages of right users.
+						admin.emit('loadHandler', res); //modify to get personal messages of right users.
 						}
 					});
 				});
