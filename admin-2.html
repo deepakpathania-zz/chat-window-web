@@ -99,6 +99,7 @@ $(document).ready(function(){
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"> </script>
 <script type="text/javascript">
 var selector = '.list li a';
+ var currentId;
 var limit = 6;
 var offset = 0;
 var arr = {limit, offset};
@@ -106,6 +107,8 @@ $(".list").on('click', "li", function(){
     $(".list li a").removeClass('active');
     $(this).find("a .new").remove();
     $(this).find("a").addClass('active');
+    temp = $(this).attr("id").split('_'); 
+    currentId = temp[0];
 })
 $(".load").on('click',function() {
     offset = offset + 1;
@@ -120,6 +123,7 @@ $(".people-list").on('click', '.list li ' , function(){
   console.log(id);
   id=id.split('_');
   id=id[0];
+  currentId = id;
   clientId=id;
 
   $(".chat-with").html($(this).find("a").html());
@@ -127,9 +131,11 @@ $(".people-list").on('click', '.list li ' , function(){
     console.log("emitting clientId : ", clientId);
     socket.emit('getMessagesFromUser',clientId);
     firstclicked[id] = true;
+
   }
   $(".userchat").hide();
   $("#"+id).show();
+  scroll();
 });
 
 </script>
@@ -191,6 +197,7 @@ $(".people-list").on('click', '.list li ' , function(){
       console.log("1 create");
       history.setAttribute('id', clientId);
       history.setAttribute("class","userchat");
+
       $(".list li:eq(0)").before(client); 
     }
     else {
@@ -219,8 +226,12 @@ $(".people-list").on('click', '.list li ' , function(){
       console.log(histories);
       console.log("working newMessage");
       history.insertBefore(message, history.lastChild);
-      $("#"+clientId).css("display","none");
       scroll();
+      console.log("currentId : ", currentId);
+      console.log("clientId : ", clientId);
+      if(currentId!=clientId) {
+      $("#"+clientId).css("display","none");
+      }
   });
   socket.on('status', function(data) { //clears the textarea and changes the status
     console.log("Status ", data);

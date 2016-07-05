@@ -242,9 +242,7 @@ body {
 .active {
   color: #BDE0FF !important;
 }
-.userchats {
-  display : none;
-}
+
 .load {
   margin-top: -47px;
   margin-left: 26px;
