@@ -25,7 +25,7 @@
       <div class="heading">
         Clients 
       </div>
-      <ul class="list"></ul> <!--clients are populated here -->
+      <ul class="list"><li></li></ul> <!--clients are populated here -->
       
       <button class="pure-button pure-button-primary load">Load More</button>
 
@@ -104,6 +104,7 @@ var offset = 0;
 var arr = {limit, offset};
 $(".list").on('click', "li", function(){
     $(".list li a").removeClass('active');
+    $(this).find("a .new").remove();
     $(this).find("a").addClass('active');
 })
 $(".load").on('click',function() {
@@ -181,30 +182,36 @@ $(".people-list").on('click', '.list li ' , function(){
     clientId = data.id;
     console.log("name : " ,name);
     console.log("id :" ,id);
-    if(document.getElementById(id)===null) {
+    if(document.getElementById(id)==null) {
       var client = document.createElement('li');
       client.setAttribute('class', "clearfix ");
       client.setAttribute('id',id);
-      client.innerHTML = '<a href="#" class="name">' +name+ '<br/><span class="email">' +email+' </a>';
+      client.innerHTML = '<a href="#" class="name">' +name+ '<span class="new">New</span><br/><span class="email">' +email+' </a>';
       var history = document.createElement('div');
+      console.log("1 create");
       history.setAttribute('id', clientId);
       history.setAttribute("class","userchat");
-      user.appendChild(client); 
+      $(".list li:eq(0)").before(client); 
     }
     else {
       var client = document.getElementById(id);
       var history = document.getElementById(clientId);
+      console.log("2 get");
+    //   if(!($('#'+clientId+"_li a ").has(".new"))){
+    //     $('#'+clientId+"_li a ").append('<span class="new">New</span>');
 
+    // }      
+      
       }
       // $(".userchat").hide();
     
       console.log(clientId);
       firstclicked[clientId] = true;
-      user.insertBefore(client, user.lastChild); 
+      user.insertBefore(client, user.firstChild); 
       var message = document.createElement('div');
       var clear = document.createElement('div');
       clear.setAttribute('class', 'clear');
-      message.setAttribute('class', 'message my-message');
+      message.setAttribute('class', 'message other-message align-right');
       message.textContent = data.message; 
       history.appendChild(message);
       history.appendChild(clear);
@@ -223,6 +230,7 @@ $(".people-list").on('click', '.list li ' , function(){
       }
     });
   socket.on('dbHandler', function(data) { //gets the chat messages from database to be displayed on return of admin
+    
       console.log("inside db handler");
         console.log("data : ", data);
           if(data.length) {
@@ -231,12 +239,11 @@ $(".people-list").on('click', '.list li ' , function(){
               clientId = data[x]._id;
               firstclicked[clientId] = false;
               console.log("clientId : " ,clientId);
+              if(x<1) {
+                socket.emit('getMessagesFromUser',clientId);
+              }
               email = data[x].email;
               name = data[x].name;
-              // $(".people-list").on('click', '.list li ' , function(){
-              //   console.log("clientId inside click :" ,clientId);
-              //   socket.emit('getMessagesFromUser',clientId);
-              // });
               console.log("data.length >1 ");
               console.log("data[x] : " , data[x]);
               var client = document.createElement('li');
@@ -245,28 +252,8 @@ $(".people-list").on('click', '.list li ' , function(){
               if(data[x].name != null){
               client.innerHTML = '<a href="#" class="name">' +name+ '<br/><span class="email">' +email+' </a>';
               }
-              // var history = document.createElement('div');
-              // history.setAttribute('id', clientId);
-              // history.setAttribute("class","userchat");
-              // console.log("History : ", history);
-              // var message = document.createElement('div');
-              // var clear = document.createElement('div');
               user.appendChild(client);
-              user.insertBefore(client, user.lastChild); 
-              // clear.setAttribute('class', 'clear');
-            //     if(data[x].name) { //fetches and displays according to sender
-            //       message.setAttribute('class', 'message other-message align-right');
-            //     }
-            //     else {
-            //       message.setAttribute('class', 'message my-message');
-            //     }
-            // message.textContent = data[x].message; 
-            // history.appendChild(message);
-            // history.appendChild(clear);
-            // console.log(histories);
-            // history.insertBefore(message, history.lastChild);
-            // histories.appendChild(history);
-
+              user.insertBefore(client, user.lastChild);
             scroll();
             }
           }
@@ -295,6 +282,7 @@ $(".people-list").on('click', '.list li ' , function(){
         history.insertBefore(message, history.lastChild);
         histories.appendChild(history);
       }
+    scroll();
   });
   textarea.addEventListener('keydown', function(event) { //sends message on enter and enters next line on shift plus enter
     var self = this; 
@@ -313,7 +301,7 @@ $(".people-list").on('click', '.list li ' , function(){
               var message = document.createElement('div');
               var clear = document.createElement('div');
               clear.setAttribute('class', 'clear');
-              message.setAttribute('class', 'message other-message align-right');
+              message.setAttribute('class', 'message my-message');
               message.textContent = self.value; 
               history.appendChild(message);
               history.appendChild(clear);
