@@ -6,7 +6,7 @@ var admin;
 var clients = {};
 
 var hashed_string = "1c4a81692da3391b57ba6c5afdf11f46"; //emitted by admin to check whether admin is online or not
-mongo.connect('mongodb://127.0.0.1/chat', function(err, db){ //change collection name from chat to your collection name
+mongo.connect('mongodb://52.35.85.220/chat', function(err, db){ //change collection name from chat to your collection name
 	if(err) {
 		throw err;
 	}

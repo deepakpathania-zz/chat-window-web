@@ -12,7 +12,7 @@
 <body>
  	<div id="chat" onClick="open_chatbox();"> <a class="btn-floating btn-large waves-effect waves-light blue"><i class="material-icons fa fa-comments-o fa-7x"></i></a>
 </div> <!--Chat window tile, expands and closes on click  -->
- 	<div id="chatBox"><div onclick="closeChat()" id="close"><div class="chat-heading">New Conversation</div><div class="x">X</div></div> <br><br>
+ 	<div id="chatBox"><div onclick="closeChat()" id="close"><div class="chat-heading">New Conversation</div><div class="x">✖</div></div> <br><br>
  	<div class='printchatbox msg_container_base' id='printchatbox'>
 		<div class="chat">
 			<div class="chat-messages" id ="div1"></div> <!-- chat messages are populated here-->
@@ -54,20 +54,20 @@
 			var getNode = function(s) { //returns reference to passed attribute 
 			return document.querySelector(s);
 		};
-		status = getNode('.chat-status span');
+		// status = getNode('.chat-status span');
 		textarea = getNode('.chat-text-area');
 		messages = getNode('.chat-messages');
-		statusDefault = status.textContent;
-		setStatus = function(s) {
-			status.textContent = s;
-			if(s != statusDefault) {
-				var delay = setTimeout(function() {
-					setStatus(statusDefault);
-					clearInterval(delay);
-				},3000);
-			}
-		};
-		setStatus("Testing");
+		// statusDefault = status.textContent;
+		// setStatus = function(s) {
+		// 	status.textContent = s;
+		// 	if(s != statusDefault) {
+		// 		var delay = setTimeout(function() {
+		// 			setStatus(statusDefault);
+		// 			clearInterval(delay);
+		// 		},3000);
+		// 	}
+		// };
+		// setStatus("Testing");
 
 		try {
 			var socket = io.connect('http://127.0.0.1:8080'); //change this according to your server
@@ -84,7 +84,7 @@
 					console.log(data); 
 					var message = document.createElement('div'); //create a div for the new chat message
 					message.setAttribute('class', 'chat-message-left');
-					message.textContent = data; //populate it with the message data
+					message.innerHTML = '<div class="profile"><img src="https://cdn2.iconfinder.com/data/icons/person-gender-hairstyle-clothes-variations/48/Female-Side-comb-O-neck-512.png" class="profile-img"></div>'+data; //populate it with the message data
 					messages.appendChild(message);
 					messages.insertBefore(message , messages.lastChild);
 					scroll();
@@ -119,11 +119,13 @@
 							clear.setAttribute('class', 'clear');
 								if(chatData[x].name == userName) {
 									message.setAttribute('class', 'chat-message-right');
+									message.textContent = chatData[x].message;
 								}
 								else {
 									message.setAttribute('class', 'chat-message-left');
+									message.innerHTML = '<div class="profile"><img src="https://cdn2.iconfinder.com/data/icons/person-gender-hairstyle-clothes-variations/48/Female-Side-comb-O-neck-512.png" class="profile-img"></div>'+chatData[x].message; //populate it with the message data
 								}
-				message.textContent = chatData[x].message;	
+					
 				messages.appendChild(message);
 				messages.appendChild(clear);
 				messages.insertBefore(message , messages.lastChild);
@@ -138,7 +140,7 @@
 				var clear = document.createElement('div');
 				clear.setAttribute('class', 'clear');
 				message.setAttribute('class', 'chat-message-left');
-				message.textContent = data;	
+				message.innerHTML = '<div class="profile"><img src="https://cdn2.iconfinder.com/data/icons/person-gender-hairstyle-clothes-variations/48/Female-Side-comb-O-neck-512.png" class="profile-img"></div>'+data; //populate it with the message data	
 				console.log(data);
 				clientId = data.id;
 				messages.appendChild(message);
@@ -156,11 +158,13 @@
 							clear.setAttribute('class', 'clear');
 								if(chatData[x].name == userName) {
 									message.setAttribute('class', 'chat-message-right');
+									message.textContent = chatData[x].message;
 								}
 								else {
 									message.setAttribute('class', 'chat-message-left');
+									message.innerHTML = '<div class="profile"><img src="https://cdn2.iconfinder.com/data/icons/person-gender-hairstyle-clothes-variations/48/Female-Side-comb-O-neck-512.png" class="profile-img"></div>'+chatData[x].message; //populate it with the message data
 								}
-				message.textContent = chatData[x].message;	
+					
 				messages.appendChild(message);
 				messages.appendChild(clear);
 				messages.insertBefore(message , messages.lastChild);
@@ -181,7 +185,7 @@
 				message.setAttribute('class', 'chat-message-left');
 				var retrievedData = localStorage.getItem("userInfo");
 				var chatData = JSON.parse(retrievedData);
-				message.textContent = "Hey " +chatData.name+ "!. You are now connected to our admin. Drop a message to start the conversation.";
+				message.innerHTML = '<div class="profile"><img src="https://cdn2.iconfinder.com/data/icons/person-gender-hairstyle-clothes-variations/48/Female-Side-comb-O-neck-512.png" class="profile-img"></div> Hey '+chatData.name+' ! You are now connected to our admin. Drop a message to start the conversation.';
 				messages.appendChild(message);
 				messages.appendChild(clear);
 				messages.insertBefore(message , messages.lastChild);
@@ -244,7 +248,7 @@
 				var clear = document.createElement('div');
 				clear.setAttribute('class', 'clear');
 				message.setAttribute('class', 'chat-message-left');
-				message.textContent = "Hello " + userInfo.name+ " ! What is your email ?";
+				message.innerHTML = '<div class="profile"><img src="https://cdn2.iconfinder.com/data/icons/person-gender-hairstyle-clothes-variations/48/Female-Side-comb-O-neck-512.png" class="profile-img"></div> Hey '+userInfo.name+' ! What is your email ? ';
 				messages.appendChild(message);
 				messages.appendChild(clear);
 				messages.insertBefore(message , messages.lastChild);
@@ -262,7 +266,7 @@
 				var clear = document.createElement('div');
 				clear.setAttribute('class', 'clear');
 				message.setAttribute('class', 'chat-message-left');
-				message.textContent = "Thanks " +userInfo.name+ "!. We'll get back to you shortly.";
+				message.innerHTML = '<div class="profile"><img src="https://cdn2.iconfinder.com/data/icons/person-gender-hairstyle-clothes-variations/48/Female-Side-comb-O-neck-512.png" class="profile-img"></div> Thanks '+userInfo.name+ ' ! We will get back to you shortly';
 				messages.appendChild(message);
 				messages.appendChild(clear);
 				messages.insertBefore(message , messages.lastChild);
@@ -277,7 +281,7 @@
 				var clear = document.createElement('div');
 				clear.setAttribute('class', 'clear');
 				message.setAttribute('class', 'chat-message-left');
-				message.textContent = "Hey " +userInfo.name+ "!. This doesn't seem like a valid email address. Try again" ;
+				message.innerHTML = '<div class="profile"><img src="https://cdn2.iconfinder.com/data/icons/person-gender-hairstyle-clothes-variations/48/Female-Side-comb-O-neck-512.png" class="profile-img"></div> Hey '+userInfo.name+ ' ! That does not seem like a valid email. Try again.';
 				messages.appendChild(message);
 				messages.appendChild(clear);
 				messages.insertBefore(message , messages.lastChild);
@@ -288,7 +292,7 @@
 	
 			socket.on('status', function(data) {
 				console.log("Status ", data);
-				setStatus((typeof data === 'object')? data.message : data );
+				// setStatus((typeof data === 'object')? data.message : data );
 				if(data.clear === true) {
 					textarea.value='';
 				}
@@ -308,7 +312,7 @@
 						sender.textContent = data[x].name; // do something with sender name if you feel like
 						console.log(sender.textContent);
 						var elem = sender.textContent;
-						message.textContent = data[x].message;	
+						message.innerHTML = '<div class="profile"><img src="https://cdn2.iconfinder.com/data/icons/person-gender-hairstyle-clothes-variations/48/Female-Side-comb-O-neck-512.png" class="profile-img"></div>'+data[x].message;	
 						messages.appendChild(message);
 						messages.appendChild(clear);
 						messages.insertBefore(message , messages.lastChild);
@@ -321,7 +325,7 @@
 						var clear = document.createElement('div');
 						clear.setAttribute('class', 'clear');
 						message.setAttribute('class', 'chat-message-left');
-						message.textContent = data.message;	
+						message.innerHTML = '<div class="profile"><img src="https://cdn2.iconfinder.com/data/icons/person-gender-hairstyle-clothes-variations/48/Female-Side-comb-O-neck-512.png" class="profile-img"></div>'+data.message;
 						messages.appendChild(message);
 						messages.appendChild(clear);
 						messages.insertBefore(message , messages.lastChild);
@@ -366,7 +370,6 @@
 							email : self.value
 						});
 					}
-					
 					console.log("Send");
 				}
 			});

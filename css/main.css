@@ -38,9 +38,9 @@ border-color: transparent transparent transparent #007bff;
 
 .chat-message-left {
 	margin-top: 10px; 
-	font-size: 16px;
+	font-size: 14px;
 	max-width: 75%;
-	font-family: 'Roboto', sans-serif;
+	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
 	background: #e6eef4;
   	float: left;
   	padding: 10px 15px;
@@ -49,7 +49,7 @@ border-color: transparent transparent transparent #007bff;
     -webkit-border-radius: 0;
     border-radius: 4px;
     color:#444;
-    margin-left:8px;
+    margin-left:58px;
     display: inline-block;
 	position: relative;
 }
@@ -69,10 +69,10 @@ border-color: transparent transparent transparent #007bff;
 }
 .chat-message-right {
 	margin-top: 5px;
-	font-size: 16px;
+	font-size: 14px;
 	float : right;	
 	max-width:75%;
-	font-family: 'Roboto', sans-serif;
+	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
 	background: #0074b0;
   	color: #fff;
   	float: right;
@@ -132,7 +132,7 @@ border-color: transparent transparent transparent #007bff;
  padding:10px;
  color:#EDEDED;
  text-align:center;
- font-family:Cambria;
+ font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
  font-size:20px;
  bottom:0px;
  right:15px;
@@ -168,7 +168,7 @@ margin-left: -8px;
 margin-bottom: 15px;
 font-size: 18px;
  color:#F44336;
- font-family:Cambria;
+font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
 /* right:8px;top:5px;*/
  float: right;
  z-index: 2147483002;
@@ -193,14 +193,33 @@ width:inherit;
 	text-align: center;
 	padding-top : 12px;
 	color : black;
+	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
+	font-size: 17px !important;
 }
 .x {
 	text-align: right;
 	margin-top: -19px;
-	color : #4F7690;
+	font-size: 18px;
+	color : #6B6B79;
 	padding-right:10px;
 }
 .blue {
 	background-color: #0074B0;
 	border : 1px solid #004c88;
+}
+.profile {
+	float: left;
+    width: 45px;
+    height: 45px;
+    background: #eee;
+    border-radius: 25px;
+    text-align: center;
+    border-radius: 25px;
+    padding-top: 7px;
+    position: absolute;
+    left: -57px;
+    top: -3px;
+}
+.profile-img {
+	width: 30px;
 }
