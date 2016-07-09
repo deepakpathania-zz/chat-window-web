@@ -40,11 +40,10 @@
 It connects you to an admin if someone is online from the admin panel(checked by emitting a unique hashed string from admin account) or simply prompts you to leave your message if admin is offline.
 
 
-
-![demo2](https://cloud.githubusercontent.com/assets/15071438/16568207/04f7e8b0-4245-11e6-83db-ab421ee858fd.png)
-![demo3](https://cloud.githubusercontent.com/assets/15071438/16568208/04f8d806-4245-11e6-966d-67b146a7c4cd.png)
-![demo4](https://cloud.githubusercontent.com/assets/15071438/16568209/04fd9d78-4245-11e6-86c9-20b5dc7bfcf0.png)
-![demo5](https://cloud.githubusercontent.com/assets/15071438/16568211/05060ff8-4245-11e6-93fc-80b659432454.png)
+![demo2](https://cloud.githubusercontent.com/assets/15071438/16708958/91d373a6-4620-11e6-98be-db9b24af49aa.png)
+![demo3](https://cloud.githubusercontent.com/assets/15071438/16708955/91d09d7a-4620-11e6-8050-c80457c1c0da.png)
+![demo4](https://cloud.githubusercontent.com/assets/15071438/16708954/91d05540-4620-11e6-86a3-ef55401e84e6.png)
+![demo5](https://cloud.githubusercontent.com/assets/15071438/16708956/91d0c048-4620-11e6-8df3-cfc2254e251a.png)
 
 
 - Every time a new client is added, his name and chat history div is added dynamically to the client list. For returning users, the message is sent to the existing chat history div. The admin can switch among chats simply by clicking on the names of the clients in the client list.
@@ -60,3 +59,4 @@ The last screenshot represents a returning user.
 
 ![demo6](https://cloud.githubusercontent.com/assets/15071438/16568210/0505665c-4245-11e6-9c8e-b141d0cfb4e1.png)
 ![demo9](https://cloud.githubusercontent.com/assets/15071438/16568214/0538c3d0-4245-11e6-8515-fdbfcea5aa36.png)
+
